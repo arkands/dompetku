@@ -280,8 +280,8 @@ async function muatData() {
 // ---- UPDATE SUMMARY CARDS ----
 function updateSummary(data) {
   // Lewati baris header (baris pertama jika berisi string)
-  const rows = data.filter((r, i) => i > 0 && typeof r[3] === 'number');
-
+const rows = data.filter((r, i) => i > 0 && r[3] !== '' && r[3] != null);
+  
   const sekarang   = new Date();
   const bulanIni   = sekarang.getMonth();
   const tahunIni   = sekarang.getFullYear();
