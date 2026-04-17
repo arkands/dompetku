@@ -2,7 +2,7 @@
   "name": "DompetKu – Pencatat Keuangan",
   "short_name": "DompetKu",
   "description": "Aplikasi pencatat keuangan pribadi sederhana yang terhubung ke Google Sheets",
-  "start_url": "./index.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0f0f1a",
   "theme_color": "#7c6af7",
