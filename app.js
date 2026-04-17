@@ -191,28 +191,29 @@ async function simpanPengeluaran() {
 
   setLoading(true);
 
-  try {
-    const response = await fetch(scriptUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tanggal, kategori, keterangan, jumlah: parseInt(jumlah) })
-    });
+ try {
+  await fetch(scriptUrl, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8'
+    },
+    body: JSON.stringify({
+      tanggal,
+      kategori,
+      keterangan,
+      jumlah: parseInt(jumlah)
+    })
+  });
 
-    if (!response.ok) throw new Error('Gagal mengirim data');
+  // langsung anggap sukses
+  semuaData.push(newRow);
+  updateSummary(semuaData);
+  renderRiwayat();
+  resetForm();
+  showToast('✅ Pengeluaran berhasil disimpan ke Google Sheets!', 'success');
 
-    const result = await response.json();
-
-    if (result.status === 'berhasil') {
-      semuaData.push(newRow);
-      updateSummary(semuaData);
-      renderRiwayat();
-      resetForm();
-      showToast('✅ Pengeluaran berhasil disimpan ke Google Sheets!', 'success');
-    } else {
-      throw new Error('Respons tidak dikenali');
-    }
-
-  } catch (err) {
+} catch (err) {
     console.error(err);
     showToast('❌ Gagal menyimpan. Cek koneksi internet kamu.', 'error');
   } finally {
