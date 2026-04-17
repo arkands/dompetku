@@ -33,10 +33,18 @@ function formatTanggalISO(daysAgo = 0) {
   return d.toISOString().split('T')[0];
 }
 
-function formatTanggalDisplay(isoStr) {
-  if (!isoStr) return '—';
-  const d = new Date(isoStr + 'T00:00:00');
-  return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+function formatTanggalDisplay(value) {
+  if (!value) return '—';
+
+  const d = new Date(value);
+
+  if (isNaN(d.getTime())) return '—';
+
+  return d.toLocaleDateString('id-ID', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  });
 }
 
 function formatRupiah(angka) {
