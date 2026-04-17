@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DompetKu – Pencatat Keuangan</title>
+  <meta name="description" content="Aplikasi pencatat keuangan pribadi sederhana" />
+  <meta name="theme-color" content="#1a1a2e" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- SPLASH / LOADING -->
+  <div id="splash">
+    <div class="splash-inner">
+      <div class="splash-logo">💰</div>
+      <div class="splash-title">DompetKu</div>
+      <div class="splash-sub">Memuat aplikasi...</div>
+    </div>
+  </div>
+
+  <!-- APP WRAPPER -->
+  <div id="app" class="hidden">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-top">
+        <div>
+          <p class="header-greeting">Selamat datang 👋</p>
+          <h1 class="header-title">DompetKu</h1>
+        </div>
+        <div class="header-icon">💰</div>
+      </div>
+
+      <!-- SUMMARY CARD -->
+      <div class="summary-card">
+        <p class="summary-label">Total Pengeluaran Bulan Ini</p>
+        <p class="summary-amount" id="totalBulanIni">Rp 0</p>
+        <div class="summary-meta">
+          <span id="jumlahTransaksi">0 transaksi</span>
+          <span id="bulanLabel">—</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- TABS -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="catat">✏️ Catat</button>
+      <button class="tab" data-tab="riwayat">📋 Riwayat</button>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+      <!-- TAB: CATAT PENGELUARAN -->
+      <section id="tab-catat" class="tab-content active">
+        <div class="card form-card">
+          <h2 class="card-title">Catat Pengeluaran Baru</h2>
+
+          <div class="form-group">
+            <label class="form-label">📅 Tanggal</label>
+            <input type="date" id="inputTanggal" class="form-input" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">🏷️ Kategori</label>
+            <select id="inputKategori" class="form-input">
+              <option value="">-- Pilih Kategori --</option>
+              <option value="🍜 Makanan & Minuman">🍜 Makanan & Minuman</option>
+              <option value="🚗 Transportasi">🚗 Transportasi</option>
+              <option value="🛒 Belanja">🛒 Belanja</option>
+              <option value="💊 Kesehatan">💊 Kesehatan</option>
+              <option value="📚 Pendidikan">📚 Pendidikan</option>
+              <option value="🎮 Hiburan">🎮 Hiburan</option>
+              <option value="🏠 Rumah & Utilitas">🏠 Rumah & Utilitas</option>
+              <option value="👗 Pakaian">👗 Pakaian</option>
+              <option value="📱 Pulsa & Internet">📱 Pulsa & Internet</option>
+              <option value="🔧 Lainnya">🔧 Lainnya</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">📝 Keterangan</label>
+            <input type="text" id="inputKeterangan" class="form-input" placeholder="Contoh: Makan siang di warung..." />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">💵 Jumlah (Rp)</label>
+            <input type="number" id="inputJumlah" class="form-input" placeholder="Contoh: 25000" min="0" />
+          </div>
+
+          <button id="btnSimpan" class="btn-primary">
+            <span id="btnText">💾 Simpan Pengeluaran</span>
+            <span id="btnLoader" class="hidden">⏳ Menyimpan...</span>
+          </button>
+
+          <!-- TOAST NOTIFICATION -->
+          <div id="toast" class="toast hidden"></div>
+        </div>
+
+        <!-- QUICK STATS -->
+        <div class="quick-stats">
+          <div class="stat-card">
+            <span class="stat-icon">📆</span>
+            <span class="stat-label">Hari Ini</span>
+            <span class="stat-value" id="statHariIni">Rp 0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">📅</span>
+            <span class="stat-label">Minggu Ini</span>
+            <span class="stat-value" id="statMingguIni">Rp 0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: RIWAYAT -->
+      <section id="tab-riwayat" class="tab-content hidden">
+        <div class="riwayat-header">
+          <h2 class="card-title">Riwayat Pengeluaran</h2>
+          <button id="btnRefresh" class="btn-refresh" title="Refresh data">🔄</button>
+        </div>
+
+        <!-- FILTER -->
+        <div class="filter-bar">
+          <select id="filterKategori" class="form-input filter-select">
+            <option value="">Semua Kategori</option>
+            <option value="🍜 Makanan & Minuman">🍜 Makanan</option>
+            <option value="🚗 Transportasi">🚗 Transportasi</option>
+            <option value="🛒 Belanja">🛒 Belanja</option>
+            <option value="💊 Kesehatan">💊 Kesehatan</option>
+            <option value="📚 Pendidikan">📚 Pendidikan</option>
+            <option value="🎮 Hiburan">🎮 Hiburan</option>
+            <option value="🏠 Rumah & Utilitas">🏠 Rumah</option>
+            <option value="👗 Pakaian">👗 Pakaian</option>
+            <option value="📱 Pulsa & Internet">📱 Pulsa</option>
+            <option value="🔧 Lainnya">🔧 Lainnya</option>
+          </select>
+        </div>
+
+        <!-- LIST -->
+        <div id="riwayatList">
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>Belum ada data.<br/>Klik 🔄 untuk memuat riwayat.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM NAV (mobile feel) -->
+    <div class="bottom-safe"></div>
+
+  </div><!-- end #app -->
+
+  <!-- CONFIG MODAL (first time setup) -->
+  <div id="modalConfig" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-icon">⚙️</div>
+      <h2 class="modal-title">Setup Pertama Kali</h2>
+      <p class="modal-desc">Masukkan URL Google Apps Script kamu untuk menghubungkan aplikasi dengan Google Sheets.</p>
+      <div class="form-group">
+        <label class="form-label">🔗 URL Google Apps Script</label>
+        <input type="url" id="inputScriptUrl" class="form-input" placeholder="https://script.google.com/macros/s/..." />
+      </div>
+      <p class="modal-hint">💡 Dapatkan URL ini dari Google Apps Script → Deploy → Manage Deployments</p>
+      <button id="btnSaveConfig" class="btn-primary">✅ Simpan & Mulai</button>
+      <button id="btnDemoMode" class="btn-secondary">🎮 Coba Mode Demo</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
