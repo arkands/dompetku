@@ -306,11 +306,7 @@ const rows = data.filter((r, i) => i > 0 && r[3] !== '' && r[3] != null);
 
   // Hari ini
   const totalHari = rows
-    .filter(r => {
-   const d = parseTanggal(r[0]);
-   if (!d) return false;
-   return d.toISOString().split('T')[0] === hariIniStr;
-  })
+    .filter(r => r[0] === hariIniStr)
     .reduce((sum, r) => sum + (parseInt(r[3]) || 0), 0);
 
   // Minggu ini (7 hari terakhir)
