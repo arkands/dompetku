@@ -36,6 +36,22 @@ function formatTanggalISO(daysAgo = 0) {
   return d.toISOString().split('T')[0];
 }
 
+
+// Konversi nilai tanggal dari Sheets (bisa Date object atau string) ke format YYYY-MM-DD
+function toISO(val) {
+  if (!val) return '';
+  if (val instanceof Date) {
+    return val.toISOString().split('T')[0];
+  }
+  // Kalau sudah string format YYYY-MM-DD
+  const s = String(val).trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  // Coba parse
+  const d = new Date(s);
+  if (!isNaN(d.getTime())) return d.toISOString().split('T')[0];
+  return s;
+}
+
 function formatTanggalDisplay(value) {
   if (!value) return '—';
   const d = new Date(value + 'T00:00:00');
@@ -285,7 +301,10 @@ async function muatData() {
 // ===========================
 
 function updateSummary(data) {
-  const rows = data.filter((r, i) => i > 0 && r[3] !== '' && r[3] != null);
+  // Normalisasi semua tanggal ke string ISO dulu, lewati header & baris kosong
+  const rows = data
+    .filter((r, i) => i > 0 && r[3] !== '' && r[3] != null)
+    .map(r => [toISO(r[0]), r[1], r[2], r[3]]);
 
   const sekarang   = new Date();
   const bulanIni   = sekarang.getMonth();
@@ -335,7 +354,8 @@ function renderRiwayat() {
 
   const rows = semuaData
     .filter((r, i) => i > 0 && r[0])
-    .filter(r => !filter || r[1] === filter)
+    .map(r => [toISO(r[0]), r[1], r[2], r[3]])
+    .filter(r => r[0] && (!filter || r[1] === filter))
     .sort((a, b) => new Date(b[0]) - new Date(a[0]));
 
   if (rows.length === 0) {
