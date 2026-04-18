@@ -178,6 +178,112 @@
     </div>
   </div>
 
+
+  <!-- MODAL EDIT -->
+  <div id="modalEdit" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-icon">✏️</div>
+      <h2 class="modal-title">Edit Pengeluaran</h2>
+
+      <div class="form-group">
+        <label class="form-label">📅 Tanggal</label>
+        <input type="date" id="editTanggal" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">🏷️ Kategori</label>
+        <select id="editKategori" class="form-input">
+          <option value="">-- Pilih Kategori --</option>
+          <option value="🍜 Makanan & Minuman">🍜 Makanan & Minuman</option>
+          <option value="🚗 Transportasi">🚗 Transportasi</option>
+          <option value="🛒 Belanja">🛒 Belanja</option>
+          <option value="💊 Kesehatan">💊 Kesehatan</option>
+          <option value="📚 Pendidikan">📚 Pendidikan</option>
+          <option value="🎮 Hiburan">🎮 Hiburan</option>
+          <option value="🏠 Rumah & Utilitas">🏠 Rumah & Utilitas</option>
+          <option value="👗 Pakaian">👗 Pakaian</option>
+          <option value="📱 Pulsa & Internet">📱 Pulsa & Internet</option>
+          <option value="🔧 Lainnya">🔧 Lainnya</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">📝 Keterangan</label>
+        <input type="text" id="editKeterangan" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">💵 Jumlah (Rp)</label>
+        <input type="number" id="editJumlah" class="form-input" min="0" />
+      </div>
+
+      <button id="btnSimpanEdit" class="btn-primary">💾 Simpan Perubahan</button>
+      <button id="btnTutupEdit" class="btn-secondary">Batal</button>
+    </div>
+  </div>
+
+  <!-- MODAL HAPUS -->
+  <div id="modalHapus" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-icon">🗑️</div>
+      <h2 class="modal-title">Hapus Pengeluaran?</h2>
+      <p class="modal-desc">Data berikut akan dihapus permanen dan tidak bisa dikembalikan.</p>
+      <div class="hapus-info" id="hapusInfo"></div>
+      <button id="btnKonfirmasiHapus" class="btn-danger">🗑️ Ya, Hapus!</button>
+      <button id="btnBatalHapus" class="btn-secondary">Batal</button>
+    </div>
+  </div>
+
+  
+  <!-- MODAL EDIT -->
+  <div id="modalEdit" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-icon">✏️</div>
+      <h2 class="modal-edit-title">Edit Pengeluaran</h2>
+      <div class="form-group">
+        <label class="form-label">📅 Tanggal</label>
+        <input type="date" id="editTanggal" class="form-input" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">🏷️ Kategori</label>
+        <select id="editKategori" class="form-input">
+          <option value="">-- Pilih Kategori --</option>
+          <option value="🍜 Makanan & Minuman">🍜 Makanan & Minuman</option>
+          <option value="🚗 Transportasi">🚗 Transportasi</option>
+          <option value="🛒 Belanja">🛒 Belanja</option>
+          <option value="💊 Kesehatan">💊 Kesehatan</option>
+          <option value="📚 Pendidikan">📚 Pendidikan</option>
+          <option value="🎮 Hiburan">🎮 Hiburan</option>
+          <option value="🏠 Rumah & Utilitas">🏠 Rumah & Utilitas</option>
+          <option value="👗 Pakaian">👗 Pakaian</option>
+          <option value="📱 Pulsa & Internet">📱 Pulsa & Internet</option>
+          <option value="🔧 Lainnya">🔧 Lainnya</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">📝 Keterangan</label>
+        <input type="text" id="editKeterangan" class="form-input" placeholder="Keterangan..." />
+      </div>
+      <div class="form-group">
+        <label class="form-label">💵 Jumlah (Rp)</label>
+        <input type="number" id="editJumlah" class="form-input" placeholder="Contoh: 25000" min="0" />
+      </div>
+      <div class="modal-actions">
+        <button id="btnSimpanEdit" class="btn-primary">💾 Simpan</button>
+        <button id="btnTutupEdit" class="btn-secondary">Batal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL HAPUS -->
+  <div id="modalHapus" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-icon">🗑️</div>
+      <h2 class="modal-title">Hapus Transaksi?</h2>
+      <p class="modal-desc">Transaksi berikut akan dihapus permanen:</p>
+      <div class="hapus-info" id="hapusInfo"></div>
+      <button id="btnKonfirmasiHapus" class="btn-konfirmasi-hapus">🗑️ Ya, Hapus</button>
+      <button id="btnBatalHapus" class="btn-secondary">Batal</button>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
