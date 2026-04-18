@@ -37,18 +37,42 @@ function formatTanggalISO(daysAgo = 0) {
 }
 
 
-// Konversi nilai tanggal dari Sheets (bisa Date object atau string) ke format YYYY-MM-DD
+// Konversi nilai tanggal dari Sheets ke format YYYY-MM-DD
+// Handles: "4/15/2026", "2026-04-15", Date object
 function toISO(val) {
   if (!val) return '';
+
+  // Kalau Date object
   if (val instanceof Date) {
-    return val.toISOString().split('T')[0];
+    const y = val.getFullYear();
+    const m = String(val.getMonth()+1).padStart(2,'0');
+    const d = String(val.getDate()).padStart(2,'0');
+    return y+'-'+m+'-'+d;
   }
-  // Kalau sudah string format YYYY-MM-DD
+
   const s = String(val).trim();
+
+  // Sudah format YYYY-MM-DD
   if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-  // Coba parse
-  const d = new Date(s);
-  if (!isNaN(d.getTime())) return d.toISOString().split('T')[0];
+
+  // Format M/D/YYYY atau MM/DD/YYYY (dari Google Sheets)
+  const slash = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (slash) {
+    const y = slash[3];
+    const m = slash[1].padStart(2,'0');
+    const d = slash[2].padStart(2,'0');
+    return y+'-'+m+'-'+d;
+  }
+
+  // Fallback parse
+  const dt = new Date(s);
+  if (!isNaN(dt.getTime())) {
+    const y = dt.getFullYear();
+    const m = String(dt.getMonth()+1).padStart(2,'0');
+    const d = String(dt.getDate()).padStart(2,'0');
+    return y+'-'+m+'-'+d;
+  }
+
   return s;
 }
 
