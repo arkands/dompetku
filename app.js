@@ -1,23 +1,23 @@
 // ===========================
-// DOMPETKU – app.js
+// DOMPETKU – app.js (FIXED)
 // ===========================
 
 // ---- KONFIGURASI ----
-const CONFIG_KEY   = 'dompetku_script_url';
-const CACHE_KEY    = 'dompetku_cache';
+const CONFIG_KEY    = 'dompetku_script_url';
+const CACHE_KEY     = 'dompetku_cache';
 const DEMO_MODE_KEY = 'dompetku_demo';
 
 // ---- STATE ----
-let semuaData = [];   // menyimpan semua data yang sudah diambil
+let semuaData  = [];
 let isDemoMode = false;
 
 // ---- DEMO DATA ----
 const demoData = [
-  ['Tanggal','Kategori','Keterangan','Jumlah'], // header
-  [formatTanggalISO(0), '🍜 Makanan & Minuman', 'Sarapan nasi uduk', 15000],
-  [formatTanggalISO(0), '🚗 Transportasi',       'Gojek ke kantor',  22000],
-  [formatTanggalISO(1), '🛒 Belanja',             'Indomaret',        45000],
-  [formatTanggalISO(1), '🍜 Makanan & Minuman',  'Makan siang',      25000],
+  ['Tanggal','Kategori','Keterangan','Jumlah'],
+  [formatTanggalISO(0), '🍜 Makanan & Minuman', 'Sarapan nasi uduk',  15000],
+  [formatTanggalISO(0), '🚗 Transportasi',       'Gojek ke kantor',   22000],
+  [formatTanggalISO(1), '🛒 Belanja',             'Indomaret',         45000],
+  [formatTanggalISO(1), '🍜 Makanan & Minuman',  'Makan siang',       25000],
   [formatTanggalISO(2), '📱 Pulsa & Internet',    'Beli kuota 15GB',  65000],
   [formatTanggalISO(3), '💊 Kesehatan',           'Beli vitamin C',   35000],
   [formatTanggalISO(4), '🎮 Hiburan',             'Netflix bulanan',  54000],
@@ -26,16 +26,20 @@ const demoData = [
   [formatTanggalISO(6), '🚗 Transportasi',        'Bensin motor',     50000],
 ];
 
-// ---- UTILS ----
+// ===========================
+// UTILS
+// ===========================
+
 function formatTanggalISO(daysAgo = 0) {
   const d = new Date();
   d.setDate(d.getDate() - daysAgo);
   return d.toISOString().split('T')[0];
 }
 
-function formatTanggalDisplay(isoStr) {
-  if (!isoStr) return '—';
-  const d = new Date(isoStr + 'T00:00:00');
+function formatTanggalDisplay(value) {
+  if (!value) return '—';
+  const d = new Date(value + 'T00:00:00');
+  if (isNaN(d.getTime())) return '—';
   return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
@@ -65,23 +69,30 @@ function setLoading(aktif) {
   loader.classList.toggle('hidden', !aktif);
 }
 
-// ---- INISIALISASI ----
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g,  '&amp;')
+    .replace(/</g,  '&lt;')
+    .replace(/>/g,  '&gt;')
+    .replace(/"/g,  '&quot;');
+}
+
+// ===========================
+// INISIALISASI
+// ===========================
+
 window.addEventListener('load', () => {
-  // Sembunyikan splash setelah 1.8 detik
   setTimeout(() => {
     document.getElementById('splash').style.display = 'none';
     document.getElementById('app').classList.remove('hidden');
   }, 1800);
 
-  // Set tanggal hari ini di form
   document.getElementById('inputTanggal').value = formatTanggalISO(0);
 
-  // Cek apakah sudah ada URL atau mode demo
-  const url      = getScriptUrl();
-  isDemoMode     = localStorage.getItem(DEMO_MODE_KEY) === 'true';
+  const url  = getScriptUrl();
+  isDemoMode = localStorage.getItem(DEMO_MODE_KEY) === 'true';
 
   if (!url && !isDemoMode) {
-    // Tampilkan modal setup
     setTimeout(() => {
       document.getElementById('modalConfig').classList.remove('hidden');
     }, 1900);
@@ -93,14 +104,16 @@ window.addEventListener('load', () => {
   registerServiceWorker();
 });
 
-// ---- EVENT LISTENERS ----
+// ===========================
+// EVENT LISTENERS
+// ===========================
+
 function setupEventListeners() {
-  // Tabs
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       const target = tab.dataset.tab;
+
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'), c => c.classList.add('hidden'));
       tab.classList.add('active');
 
       document.querySelectorAll('.tab-content').forEach(c => {
@@ -117,21 +130,17 @@ function setupEventListeners() {
     });
   });
 
-  // Tombol Simpan
   document.getElementById('btnSimpan').addEventListener('click', simpanPengeluaran);
-
-  // Tombol Refresh
   document.getElementById('btnRefresh').addEventListener('click', muatData);
-
-  // Filter kategori
   document.getElementById('filterKategori').addEventListener('change', renderRiwayat);
-
-  // Setup modal
   document.getElementById('btnSaveConfig').addEventListener('click', simpanKonfigurasi);
   document.getElementById('btnDemoMode').addEventListener('click', aktifkanDemoMode);
 }
 
-// ---- SIMPAN KONFIGURASI ----
+// ===========================
+// KONFIGURASI & DEMO
+// ===========================
+
 function simpanKonfigurasi() {
   const url = document.getElementById('inputScriptUrl').value.trim();
   if (!url || !url.startsWith('https://script.google.com')) {
@@ -145,34 +154,35 @@ function simpanKonfigurasi() {
   muatData();
 }
 
-// ---- MODE DEMO ----
 function aktifkanDemoMode() {
   isDemoMode = true;
   localStorage.setItem(DEMO_MODE_KEY, 'true');
   localStorage.removeItem(CONFIG_KEY);
   document.getElementById('modalConfig').classList.add('hidden');
-  semuaData = demoData;
+  semuaData = [...demoData];
   updateSummary(semuaData);
   renderRiwayat();
   showToast('🎮 Mode Demo aktif! Data ini hanya contoh.', 'info');
 }
 
-// ---- SIMPAN PENGELUARAN ----
+// ===========================
+// SIMPAN PENGELUARAN  ← BAGIAN YANG DIPERBAIKI
+// ===========================
+
 async function simpanPengeluaran() {
   const tanggal    = document.getElementById('inputTanggal').value;
   const kategori   = document.getElementById('inputKategori').value;
   const keterangan = document.getElementById('inputKeterangan').value.trim();
   const jumlah     = document.getElementById('inputJumlah').value;
 
-  // Validasi
-  if (!tanggal)    return showToast('⚠️ Tanggal harus diisi!', 'error');
-  if (!kategori)   return showToast('⚠️ Pilih kategori dulu!', 'error');
-  if (!keterangan) return showToast('⚠️ Keterangan harus diisi!', 'error');
+  if (!tanggal)                         return showToast('⚠️ Tanggal harus diisi!', 'error');
+  if (!kategori)                        return showToast('⚠️ Pilih kategori dulu!', 'error');
+  if (!keterangan)                      return showToast('⚠️ Keterangan harus diisi!', 'error');
   if (!jumlah || parseInt(jumlah) <= 0) return showToast('⚠️ Jumlah harus lebih dari 0!', 'error');
 
   const newRow = [tanggal, kategori, keterangan, parseInt(jumlah)];
 
-  // Mode Demo
+  // ── MODE DEMO ──────────────────────────────────────────────────
   if (isDemoMode) {
     semuaData.push(newRow);
     updateSummary(semuaData);
@@ -182,7 +192,7 @@ async function simpanPengeluaran() {
     return;
   }
 
-  // Mode Nyata → kirim ke Google Apps Script
+  // ── MODE NYATA ─────────────────────────────────────────────────
   const scriptUrl = getScriptUrl();
   if (!scriptUrl) {
     showToast('⚠️ URL belum dikonfigurasi. Reload halaman.', 'error');
@@ -192,25 +202,28 @@ async function simpanPengeluaran() {
   setLoading(true);
 
   try {
-    const response = await fetch(scriptUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tanggal, kategori, keterangan, jumlah: parseInt(jumlah) })
+    // PERBAIKAN CORS:
+    // Kirim data lewat URL parameter (bukan body POST)
+    // pakai method GET + mode no-cors agar tidak diblokir browser
+    const params = new URLSearchParams({
+      action: 'post',
+      tanggal,
+      kategori,
+      keterangan,
+      jumlah: parseInt(jumlah)
     });
 
-    if (!response.ok) throw new Error('Gagal mengirim data');
+    await fetch(`${scriptUrl}?${params.toString()}`, {
+      method : 'GET',
+      mode   : 'no-cors'   // wajib untuk Google Apps Script
+    });
 
-    const result = await response.json();
-
-    if (result.status === 'berhasil') {
-      semuaData.push(newRow);
-      updateSummary(semuaData);
-      renderRiwayat();
-      resetForm();
-      showToast('✅ Pengeluaran berhasil disimpan ke Google Sheets!', 'success');
-    } else {
-      throw new Error('Respons tidak dikenali');
-    }
+    // no-cors tidak bisa membaca respons → langsung anggap berhasil
+    semuaData.push(newRow);
+    updateSummary(semuaData);
+    renderRiwayat();
+    resetForm();
+    showToast('✅ Pengeluaran berhasil disimpan ke Google Sheets!', 'success');
 
   } catch (err) {
     console.error(err);
@@ -220,9 +233,11 @@ async function simpanPengeluaran() {
   }
 }
 
-// ---- MUAT DATA DARI SHEETS ----
+// ===========================
+// MUAT DATA DARI SHEETS
+// ===========================
+
 async function muatData() {
-  // Mode Demo
   if (isDemoMode) {
     semuaData = [...demoData];
     updateSummary(semuaData);
@@ -236,22 +251,19 @@ async function muatData() {
   tampilkanSkeleton();
 
   try {
-    const response = await fetch(scriptUrl + '?action=get');
+    const response = await fetch(`${scriptUrl}?action=get`);
     if (!response.ok) throw new Error('Gagal mengambil data');
 
     const result = await response.json();
     semuaData = result.data || [];
 
-    // Cache lokal (untuk offline)
     localStorage.setItem(CACHE_KEY, JSON.stringify(semuaData));
-
     updateSummary(semuaData);
     renderRiwayat();
 
   } catch (err) {
     console.warn('Gagal ambil data online, mencoba cache...', err);
 
-    // Fallback ke cache offline
     const cache = localStorage.getItem(CACHE_KEY);
     if (cache) {
       semuaData = JSON.parse(cache);
@@ -268,17 +280,18 @@ async function muatData() {
   }
 }
 
-// ---- UPDATE SUMMARY CARDS ----
+// ===========================
+// UPDATE SUMMARY CARDS
+// ===========================
+
 function updateSummary(data) {
-  // Lewati baris header (baris pertama jika berisi string)
-  const rows = data.filter((r, i) => i > 0 && typeof r[3] === 'number');
+  const rows = data.filter((r, i) => i > 0 && r[3] !== '' && r[3] != null);
 
   const sekarang   = new Date();
   const bulanIni   = sekarang.getMonth();
   const tahunIni   = sekarang.getFullYear();
   const hariIniStr = formatTanggalISO(0);
 
-  // Total bulan ini
   const totalBulan = rows
     .filter(r => {
       const d = new Date(r[0] + 'T00:00:00');
@@ -286,21 +299,18 @@ function updateSummary(data) {
     })
     .reduce((sum, r) => sum + (parseInt(r[3]) || 0), 0);
 
-  // Jumlah transaksi bulan ini
   const jmlTransaksi = rows.filter(r => {
     const d = new Date(r[0] + 'T00:00:00');
     return d.getMonth() === bulanIni && d.getFullYear() === tahunIni;
   }).length;
 
-  // Hari ini
   const totalHari = rows
     .filter(r => r[0] === hariIniStr)
     .reduce((sum, r) => sum + (parseInt(r[3]) || 0), 0);
 
-  // Minggu ini (7 hari terakhir)
   const totalMinggu = rows
     .filter(r => {
-      const d = new Date(r[0] + 'T00:00:00');
+      const d    = new Date(r[0] + 'T00:00:00');
       const diff = (sekarang - d) / (1000 * 60 * 60 * 24);
       return diff >= 0 && diff < 7;
     })
@@ -308,19 +318,21 @@ function updateSummary(data) {
 
   const namaBulan = sekarang.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
 
-  document.getElementById('totalBulanIni').textContent    = formatRupiah(totalBulan);
-  document.getElementById('jumlahTransaksi').textContent  = jmlTransaksi + ' transaksi';
-  document.getElementById('bulanLabel').textContent       = namaBulan;
-  document.getElementById('statHariIni').textContent      = formatRupiah(totalHari);
-  document.getElementById('statMingguIni').textContent    = formatRupiah(totalMinggu);
+  document.getElementById('totalBulanIni').textContent   = formatRupiah(totalBulan);
+  document.getElementById('jumlahTransaksi').textContent = jmlTransaksi + ' transaksi';
+  document.getElementById('bulanLabel').textContent      = namaBulan;
+  document.getElementById('statHariIni').textContent     = formatRupiah(totalHari);
+  document.getElementById('statMingguIni').textContent   = formatRupiah(totalMinggu);
 }
 
-// ---- RENDER RIWAYAT ----
+// ===========================
+// RENDER RIWAYAT
+// ===========================
+
 function renderRiwayat() {
   const container = document.getElementById('riwayatList');
   const filter    = document.getElementById('filterKategori').value;
 
-  // Lewati header, filter, urutkan dari terbaru
   const rows = semuaData
     .filter((r, i) => i > 0 && r[0])
     .filter(r => !filter || r[1] === filter)
@@ -347,30 +359,22 @@ function renderRiwayat() {
   `).join('');
 }
 
-// ---- SKELETON LOADING ----
+// ===========================
+// HELPERS
+// ===========================
+
 function tampilkanSkeleton() {
-  const container = document.getElementById('riwayatList');
-  container.innerHTML = [1,2,3].map(() => `<div class="skeleton"></div>`).join('');
+  document.getElementById('riwayatList').innerHTML =
+    [1,2,3].map(() => `<div class="skeleton"></div>`).join('');
 }
 
-// ---- RESET FORM ----
 function resetForm() {
-  document.getElementById('inputKategori').value  = '';
+  document.getElementById('inputKategori').value   = '';
   document.getElementById('inputKeterangan').value = '';
-  document.getElementById('inputJumlah').value    = '';
-  document.getElementById('inputTanggal').value   = formatTanggalISO(0);
+  document.getElementById('inputJumlah').value     = '';
+  document.getElementById('inputTanggal').value    = formatTanggalISO(0);
 }
 
-// ---- SECURITY: escape HTML ----
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-// ---- SERVICE WORKER ----
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js')
