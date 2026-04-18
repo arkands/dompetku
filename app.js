@@ -33,18 +33,10 @@ function formatTanggalISO(daysAgo = 0) {
   return d.toISOString().split('T')[0];
 }
 
-function formatTanggalDisplay(value) {
-  if (!value) return '—';
-
-  const d = new Date(value);
-
-  if (isNaN(d.getTime())) return '—';
-
-  return d.toLocaleDateString('id-ID', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric'
-  });
+function formatTanggalDisplay(isoStr) {
+  if (!isoStr) return '—';
+  const d = new Date(isoStr + 'T00:00:00');
+  return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
 function formatRupiah(angka) {
@@ -199,29 +191,28 @@ async function simpanPengeluaran() {
 
   setLoading(true);
 
- try {
-  await fetch(scriptUrl, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {
-      'Content-Type': 'text/plain;charset=utf-8'
-    },
-    body: JSON.stringify({
-      tanggal,
-      kategori,
-      keterangan,
-      jumlah: parseInt(jumlah)
-    })
-  });
+  try {
+    const response = await fetch(scriptUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tanggal, kategori, keterangan, jumlah: parseInt(jumlah) })
+    });
 
-  // langsung anggap sukses
-  semuaData.push(newRow);
-  updateSummary(semuaData);
-  renderRiwayat();
-  resetForm();
-  showToast('✅ Pengeluaran berhasil disimpan ke Google Sheets!', 'success');
+    if (!response.ok) throw new Error('Gagal mengirim data');
 
-} catch (err) {
+    const result = await response.json();
+
+    if (result.status === 'berhasil') {
+      semuaData.push(newRow);
+      updateSummary(semuaData);
+      renderRiwayat();
+      resetForm();
+      showToast('✅ Pengeluaran berhasil disimpan ke Google Sheets!', 'success');
+    } else {
+      throw new Error('Respons tidak dikenali');
+    }
+
+  } catch (err) {
     console.error(err);
     showToast('❌ Gagal menyimpan. Cek koneksi internet kamu.', 'error');
   } finally {
@@ -280,8 +271,8 @@ async function muatData() {
 // ---- UPDATE SUMMARY CARDS ----
 function updateSummary(data) {
   // Lewati baris header (baris pertama jika berisi string)
-const rows = data.filter((r, i) => i > 0 && r[3] !== '' && r[3] != null);
-  
+  const rows = data.filter((r, i) => i > 0 && typeof r[3] === 'number');
+
   const sekarang   = new Date();
   const bulanIni   = sekarang.getMonth();
   const tahunIni   = sekarang.getFullYear();
@@ -289,10 +280,9 @@ const rows = data.filter((r, i) => i > 0 && r[3] !== '' && r[3] != null);
 
   // Total bulan ini
   const totalBulan = rows
-  .filter(r => {
-     const d = new Date(r[0] + 'T00:00:00');
-      return d.getMonth() === bulanIni && 
-             d.getFullYear() === tahunIni;
+    .filter(r => {
+      const d = new Date(r[0] + 'T00:00:00');
+      return d.getMonth() === bulanIni && d.getFullYear() === tahunIni;
     })
     .reduce((sum, r) => sum + (parseInt(r[3]) || 0), 0);
 
