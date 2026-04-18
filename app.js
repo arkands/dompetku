@@ -290,9 +290,7 @@ const rows = data.filter((r, i) => i > 0 && r[3] !== '' && r[3] != null);
   // Total bulan ini
   const totalBulan = rows
   .filter(r => {
-      const d = parseTanggal(r[0]);
-      if (!d) return false;
-      
+     const d = new Date(r[0] + 'T00:00:00');
       return d.getMonth() === bulanIni && 
              d.getFullYear() === tahunIni;
     })
