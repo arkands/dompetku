@@ -448,32 +448,32 @@ function tutupModalHapus() {
 async function konfirmasiHapus() {
   if (hapusBaris < 0) return;
 
-  if (isDemoMode) {
-    semuaData.splice(hapusBaris, 1);
-    updateSummary(semuaData);
-    renderRiwayat();
-    tutupModalHapus();
-    showToast('🗑️ Data berhasil dihapus! (Mode Demo)', 'success');
-    return;
-  }
+  const dataCadangan   = [...semuaData];
+  const idxYangDihapus = hapusBaris;
+
+  semuaData.splice(hapusBaris, 1);
+  localStorage.setItem(CACHE_KEY, JSON.stringify(semuaData));
+  updateSummary(semuaData);
+  renderRiwayat();
+  tutupModalHapus();
+  showToast('🗑️ Data berhasil dihapus!', 'success');
+
+  if (isDemoMode) return;
 
   const scriptUrl     = getScriptUrl();
-  const noBarisSheets = hapusBaris + 1;
+  const noBarisSheets = idxYangDihapus + 1;
 
   try {
     const params = new URLSearchParams({ action: 'hapus', baris: noBarisSheets });
     await fetch(`${scriptUrl}?${params.toString()}`, { method: 'GET', mode: 'no-cors' });
-    semuaData.splice(hapusBaris, 1);
+  } catch (err) {
+    semuaData = dataCadangan;
     localStorage.setItem(CACHE_KEY, JSON.stringify(semuaData));
     updateSummary(semuaData);
     renderRiwayat();
-    tutupModalHapus();
-    showToast('🗑️ Data berhasil dihapus!', 'success');
-  } catch (err) {
-    showToast('❌ Gagal menghapus data.', 'error');
+    showToast('❌ Gagal menghapus. Data dikembalikan.', 'error');
   }
 }
-
 // ===========================
 // HELPERS
 // ===========================
