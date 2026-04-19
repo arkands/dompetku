@@ -448,29 +448,42 @@ function tutupModalHapus() {
 async function konfirmasiHapus() {
   if (hapusBaris < 0) return;
 
-  if (isDemoMode) {
-    semuaData.splice(hapusBaris, 1);
-    updateSummary(semuaData);
-    renderRiwayat();
-    tutupModalHapus();
-    showToast('🗑️ Data berhasil dihapus! (Mode Demo)', 'success');
-    return;
-  }
+  // Simpan data dulu sebagai cadangan kalau gagal
+  const dataCadangan = [...semuaData];
+  const idxYangDihapus = hapusBaris;
 
+  // ⚡ LANGSUNG hapus dari tampilan dulu (Optimistic UI)
+  semuaData.splice(hapusBaris, 1);
+  localStorage.setItem(CACHE_KEY, JSON.stringify(semuaData));
+  updateSummary(semuaData);
+  renderRiwayat();
+  tutupModalHapus();
+  showToast('🗑️ Data berhasil dihapus!', 'success');
+
+  // Mode Demo selesai sampai sini
+  if (isDemoMode) return;
+
+  // Di background → kirim perintah ke Sheets
   const scriptUrl     = getScriptUrl();
-  const noBarisSheets = hapusBaris + 1;
+  const noBarisSheets = idxYangDihapus + 1;
 
   try {
-    const params = new URLSearchParams({ action: 'hapus', baris: noBarisSheets });
-    await fetch(`${scriptUrl}?${params.toString()}`, { method: 'GET', mode: 'no-cors' });
-    semuaData.splice(hapusBaris, 1);
+    const params = new URLSearchParams({
+      action: 'hapus',
+      baris : noBarisSheets
+    });
+    await fetch(`${scriptUrl}?${params.toString()}`, {
+      method: 'GET',
+      mode  : 'no-cors'
+    });
+    // Sukses! Tidak perlu lakukan apa-apa karena tampilan sudah diupdate
+  } catch (err) {
+    // Kalau gagal → kembalikan data seperti semula
+    semuaData = dataCadangan;
     localStorage.setItem(CACHE_KEY, JSON.stringify(semuaData));
     updateSummary(semuaData);
     renderRiwayat();
-    tutupModalHapus();
-    showToast('🗑️ Data berhasil dihapus!', 'success');
-  } catch (err) {
-    showToast('❌ Gagal menghapus data.', 'error');
+    showToast('❌ Gagal menghapus. Data dikembalikan.', 'error');
   }
 }
 
