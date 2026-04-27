@@ -105,6 +105,12 @@ window.addEventListener('load', function() {
 
   document.getElementById('inputTanggal').value = formatTanggalISO(0);
 
+  // Set tanggal di header
+  var hDate = document.getElementById('headerDate');
+  if (hDate) {
+    hDate.textContent = new Date().toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' });
+  }
+
   var url = getScriptUrl();
   isDemoMode = localStorage.getItem(DEMO_MODE_KEY) === 'true';
 
