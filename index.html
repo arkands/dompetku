@@ -17,7 +17,7 @@
   <!-- SPLASH -->
   <div id="splash">
     <div class="splash-inner">
-      <div class="splash-logo">💰</div>
+      <div class="splash-logo"><span>DK</span></div>
       <div class="splash-title">DompetKu</div>
       <div class="splash-sub">Memuat aplikasi...</div>
     </div>
@@ -29,11 +29,14 @@
     <!-- HEADER -->
     <header class="header">
       <div class="header-top">
-        <div>
-          <p class="header-greeting">Selamat datang 👋</p>
-          <h1 class="header-title">DompetKu</h1>
+        <div class="header-brand">
+          <div class="brand-mark"><span>DK</span></div>
+          <div>
+            <h1 class="header-title">DompetKu</h1>
+            <p class="header-subtitle">Pencatat Keuangan</p>
+          </div>
         </div>
-        <div class="header-icon">💰</div>
+        <div class="header-date" id="headerDate"></div>
       </div>
 
       <!-- SALDO CARD -->
@@ -42,11 +45,11 @@
         <p class="saldo-amount" id="saldoSekarang">Rp 0</p>
         <div class="saldo-row">
           <div class="saldo-mini masuk">
-            <p class="saldo-mini-label">📈 Pemasukan</p>
+            <p class="saldo-mini-label">Pemasukan</p>
             <p class="saldo-mini-val" id="totalMasukHeader">Rp 0</p>
           </div>
           <div class="saldo-mini keluar">
-            <p class="saldo-mini-label">📉 Pengeluaran</p>
+            <p class="saldo-mini-label">Pengeluaran</p>
             <p class="saldo-mini-val" id="totalKeluarHeader">Rp 0</p>
           </div>
         </div>
@@ -56,9 +59,9 @@
 
     <!-- TABS -->
     <nav class="tabs">
-      <button class="tab active" data-tab="catat">✏️ Catat</button>
-      <button class="tab" data-tab="riwayat">📋 Riwayat</button>
-      <button class="tab" data-tab="statistik">📊 Statistik</button>
+      <button class="tab active" data-tab="catat">Catat</button>
+      <button class="tab" data-tab="riwayat">Riwayat</button>
+      <button class="tab" data-tab="statistik">Statistik</button>
     </nav>
 
     <!-- MAIN -->
@@ -71,8 +74,8 @@
 
           <!-- Toggle Pengeluaran / Pemasukan -->
           <div class="type-toggle">
-            <button id="btnTipePengeluaran" class="type-btn active-keluar" onclick="setTipe('pengeluaran')">📉 Pengeluaran</button>
-            <button id="btnTipePemasukan" class="type-btn" onclick="setTipe('pemasukan')">📈 Pemasukan</button>
+            <button id="btnTipePengeluaran" class="type-btn active-keluar" onclick="setTipe('pengeluaran')">Pengeluaran</button>
+            <button id="btnTipePemasukan" class="type-btn" onclick="setTipe('pemasukan')">Pemasukan</button>
           </div>
 
           <h2 class="card-title" id="formTitle">Catat Pengeluaran Baru</h2>
@@ -149,7 +152,7 @@
       <section id="tab-riwayat" class="tab-content hidden">
         <div class="riwayat-header">
           <h2 class="card-title">Riwayat Transaksi</h2>
-          <button id="btnRefresh" class="btn-refresh" title="Refresh">🔄</button>
+          <button id="btnRefresh" class="btn-refresh" title="Refresh">↻</button>
         </div>
         <div class="filter-bar">
           <select id="filterTipe" class="form-input filter-select">
@@ -173,22 +176,22 @@
         <!-- Ringkasan 4 kartu -->
         <div class="stat-grid-4">
           <div class="stat-card-big">
-            <span class="stat-big-icon">💰</span>
+            <span class="stat-big-icon">SALDO</span>
             <span class="stat-big-label">Saldo</span>
             <span class="stat-big-val ungu" id="statSaldo">Rp 0</span>
           </div>
           <div class="stat-card-big">
-            <span class="stat-big-icon">📈</span>
+            <span class="stat-big-icon">INCOME</span>
             <span class="stat-big-label">Pemasukan</span>
             <span class="stat-big-val hijau" id="statTotalMasuk">Rp 0</span>
           </div>
           <div class="stat-card-big">
-            <span class="stat-big-icon">📉</span>
+            <span class="stat-big-icon">EXPENSE</span>
             <span class="stat-big-label">Pengeluaran</span>
             <span class="stat-big-val merah" id="statTotalKeluar">Rp 0</span>
           </div>
           <div class="stat-card-big">
-            <span class="stat-big-icon">🧾</span>
+            <span class="stat-big-icon">TRX</span>
             <span class="stat-big-label">Transaksi</span>
             <span class="stat-big-val" id="statJmlTransaksi">0</span>
           </div>
