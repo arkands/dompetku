@@ -6,20 +6,15 @@
   <title>DompetKu – Pencatat Keuangan</title>
   <meta name="description" content="Aplikasi pencatat keuangan pribadi sederhana" />
   <meta name="theme-color" content="#1a1a2e" />
-
-  <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
-
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- SPLASH / LOADING -->
+  <!-- SPLASH -->
   <div id="splash">
     <div class="splash-inner">
       <div class="splash-logo">💰</div>
@@ -28,7 +23,7 @@
     </div>
   </div>
 
-  <!-- APP WRAPPER -->
+  <!-- APP -->
   <div id="app" class="hidden">
 
     <!-- HEADER -->
@@ -41,14 +36,21 @@
         <div class="header-icon">💰</div>
       </div>
 
-      <!-- SUMMARY CARD -->
-      <div class="summary-card">
-        <p class="summary-label">Total Pengeluaran Bulan Ini</p>
-        <p class="summary-amount" id="totalBulanIni">Rp 0</p>
-        <div class="summary-meta">
-          <span id="jumlahTransaksi">0 transaksi</span>
-          <span id="bulanLabel">—</span>
+      <!-- SALDO CARD -->
+      <div class="saldo-card">
+        <p class="saldo-label">Saldo Saat Ini</p>
+        <p class="saldo-amount" id="saldoSekarang">Rp 0</p>
+        <div class="saldo-row">
+          <div class="saldo-mini masuk">
+            <p class="saldo-mini-label">📈 Pemasukan</p>
+            <p class="saldo-mini-val" id="totalMasukHeader">Rp 0</p>
+          </div>
+          <div class="saldo-mini keluar">
+            <p class="saldo-mini-label">📉 Pengeluaran</p>
+            <p class="saldo-mini-val" id="totalKeluarHeader">Rp 0</p>
+          </div>
         </div>
+        <p class="saldo-meta" id="bulanLabelHeader">—</p>
       </div>
     </header>
 
@@ -56,22 +58,31 @@
     <nav class="tabs">
       <button class="tab active" data-tab="catat">✏️ Catat</button>
       <button class="tab" data-tab="riwayat">📋 Riwayat</button>
+      <button class="tab" data-tab="statistik">📊 Statistik</button>
     </nav>
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN -->
     <main class="main">
+      <div id="pullIndikator" class="pull-indikator"></div>
 
-      <!-- TAB: CATAT PENGELUARAN -->
+      <!-- TAB CATAT -->
       <section id="tab-catat" class="tab-content active">
         <div class="card form-card">
-          <h2 class="card-title">Catat Pengeluaran Baru</h2>
+
+          <!-- Toggle Pengeluaran / Pemasukan -->
+          <div class="type-toggle">
+            <button id="btnTipePengeluaran" class="type-btn active-keluar" onclick="setTipe('pengeluaran')">📉 Pengeluaran</button>
+            <button id="btnTipePemasukan" class="type-btn" onclick="setTipe('pemasukan')">📈 Pemasukan</button>
+          </div>
+
+          <h2 class="card-title" id="formTitle">Catat Pengeluaran Baru</h2>
 
           <div class="form-group">
             <label class="form-label">📅 Tanggal</label>
             <input type="date" id="inputTanggal" class="form-input" />
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="grupKategori">
             <label class="form-label">🏷️ Kategori</label>
             <select id="inputKategori" class="form-input">
               <option value="">-- Pilih Kategori --</option>
@@ -88,6 +99,20 @@
             </select>
           </div>
 
+          <div class="form-group" id="grupKategoriMasuk" style="display:none;">
+            <label class="form-label">🏷️ Sumber Pemasukan</label>
+            <select id="inputKategoriMasuk" class="form-input">
+              <option value="">-- Pilih Sumber --</option>
+              <option value="💼 Gaji">💼 Gaji</option>
+              <option value="🏪 Usaha">🏪 Usaha</option>
+              <option value="📦 Freelance">📦 Freelance</option>
+              <option value="💸 Transfer">💸 Transfer</option>
+              <option value="🎁 Hadiah">🎁 Hadiah</option>
+              <option value="📈 Investasi">📈 Investasi</option>
+              <option value="🔧 Lainnya">🔧 Lainnya</option>
+            </select>
+          </div>
+
           <div class="form-group">
             <label class="form-label">📝 Keterangan</label>
             <input type="text" id="inputKeterangan" class="form-input" placeholder="Contoh: Makan siang di warung..." />
@@ -99,11 +124,9 @@
           </div>
 
           <button id="btnSimpan" class="btn-primary">
-            <span id="btnText">💾 Simpan Pengeluaran</span>
+            <span id="btnText">💾 Simpan</span>
             <span id="btnLoader" class="hidden">⏳ Menyimpan...</span>
           </button>
-
-          <!-- TOAST NOTIFICATION -->
           <div id="toast" class="toast hidden"></div>
         </div>
 
@@ -111,42 +134,30 @@
         <div class="quick-stats">
           <div class="stat-card">
             <span class="stat-icon">📆</span>
-            <span class="stat-label">Hari Ini</span>
-            <span class="stat-value" id="statHariIni">Rp 0</span>
+            <span class="stat-label">Keluar Hari Ini</span>
+            <span class="stat-value merah" id="statHariIni">Rp 0</span>
           </div>
           <div class="stat-card">
             <span class="stat-icon">📅</span>
-            <span class="stat-label">Minggu Ini</span>
-            <span class="stat-value" id="statMingguIni">Rp 0</span>
+            <span class="stat-label">Keluar Minggu Ini</span>
+            <span class="stat-value merah" id="statMingguIni">Rp 0</span>
           </div>
         </div>
       </section>
 
-      <!-- TAB: RIWAYAT -->
+      <!-- TAB RIWAYAT -->
       <section id="tab-riwayat" class="tab-content hidden">
         <div class="riwayat-header">
-          <h2 class="card-title">Riwayat Pengeluaran</h2>
-          <button id="btnRefresh" class="btn-refresh" title="Refresh data">🔄</button>
+          <h2 class="card-title">Riwayat Transaksi</h2>
+          <button id="btnRefresh" class="btn-refresh" title="Refresh">🔄</button>
         </div>
-
-        <!-- FILTER -->
         <div class="filter-bar">
-          <select id="filterKategori" class="form-input filter-select">
-            <option value="">Semua Kategori</option>
-            <option value="🍜 Makanan & Minuman">🍜 Makanan</option>
-            <option value="🚗 Transportasi">🚗 Transportasi</option>
-            <option value="🛒 Belanja">🛒 Belanja</option>
-            <option value="💊 Kesehatan">💊 Kesehatan</option>
-            <option value="📚 Pendidikan">📚 Pendidikan</option>
-            <option value="🎮 Hiburan">🎮 Hiburan</option>
-            <option value="🏠 Rumah & Utilitas">🏠 Rumah</option>
-            <option value="👗 Pakaian">👗 Pakaian</option>
-            <option value="📱 Pulsa & Internet">📱 Pulsa</option>
-            <option value="🔧 Lainnya">🔧 Lainnya</option>
+          <select id="filterTipe" class="form-input filter-select">
+            <option value="">Semua Tipe</option>
+            <option value="pengeluaran">📉 Pengeluaran</option>
+            <option value="pemasukan">📈 Pemasukan</option>
           </select>
         </div>
-
-        <!-- LIST -->
         <div id="riwayatList">
           <div class="empty-state">
             <div class="empty-icon">📭</div>
@@ -155,14 +166,58 @@
         </div>
       </section>
 
+      <!-- TAB STATISTIK -->
+      <section id="tab-statistik" class="tab-content hidden">
+        <h2 class="card-title">Statistik Bulanan</h2>
+
+        <!-- Ringkasan 4 kartu -->
+        <div class="stat-grid-4">
+          <div class="stat-card-big">
+            <span class="stat-big-icon">💰</span>
+            <span class="stat-big-label">Saldo</span>
+            <span class="stat-big-val ungu" id="statSaldo">Rp 0</span>
+          </div>
+          <div class="stat-card-big">
+            <span class="stat-big-icon">📈</span>
+            <span class="stat-big-label">Pemasukan</span>
+            <span class="stat-big-val hijau" id="statTotalMasuk">Rp 0</span>
+          </div>
+          <div class="stat-card-big">
+            <span class="stat-big-icon">📉</span>
+            <span class="stat-big-label">Pengeluaran</span>
+            <span class="stat-big-val merah" id="statTotalKeluar">Rp 0</span>
+          </div>
+          <div class="stat-card-big">
+            <span class="stat-big-icon">🧾</span>
+            <span class="stat-big-label">Transaksi</span>
+            <span class="stat-big-val" id="statJmlTransaksi">0</span>
+          </div>
+        </div>
+
+        <!-- Grafik Batang -->
+        <div class="chart-card">
+          <p class="chart-title">Pemasukan vs Pengeluaran (6 Bulan)</p>
+          <div class="chart-wrap" id="chartBatang"></div>
+          <div class="chart-legend">
+            <span class="legend-dot hijau"></span><span class="legend-label">Pemasukan</span>
+            <span class="legend-dot merah" style="margin-left:12px;"></span><span class="legend-label">Pengeluaran</span>
+          </div>
+        </div>
+
+        <!-- Top Kategori -->
+        <div class="chart-card">
+          <p class="chart-title">Top Pengeluaran per Kategori</p>
+          <div id="topKategori">
+            <p style="color:#8888aa;font-size:13px;text-align:center;padding:16px 0;">Belum ada data</p>
+          </div>
+        </div>
+      </section>
+
     </main>
-
-    <!-- BOTTOM NAV (mobile feel) -->
     <div class="bottom-safe"></div>
+  </div>
 
-  </div><!-- end #app -->
-
-  <!-- CONFIG MODAL (first time setup) -->
+  <!-- MODAL CONFIG -->
   <div id="modalConfig" class="modal-overlay hidden">
     <div class="modal">
       <div class="modal-icon">⚙️</div>
@@ -178,13 +233,11 @@
     </div>
   </div>
 
-
   <!-- MODAL EDIT -->
   <div id="modalEdit" class="modal-overlay hidden">
     <div class="modal">
       <div class="modal-icon">✏️</div>
-      <h2 class="modal-title">Edit Pengeluaran</h2>
-
+      <h2 class="modal-edit-title">Edit Transaksi</h2>
       <div class="form-group">
         <label class="form-label">📅 Tanggal</label>
         <input type="date" id="editTanggal" class="form-input" />
@@ -192,7 +245,7 @@
       <div class="form-group">
         <label class="form-label">🏷️ Kategori</label>
         <select id="editKategori" class="form-input">
-          <option value="">-- Pilih Kategori --</option>
+          <option value="">-- Pilih --</option>
           <option value="🍜 Makanan & Minuman">🍜 Makanan & Minuman</option>
           <option value="🚗 Transportasi">🚗 Transportasi</option>
           <option value="🛒 Belanja">🛒 Belanja</option>
@@ -202,6 +255,12 @@
           <option value="🏠 Rumah & Utilitas">🏠 Rumah & Utilitas</option>
           <option value="👗 Pakaian">👗 Pakaian</option>
           <option value="📱 Pulsa & Internet">📱 Pulsa & Internet</option>
+          <option value="💼 Gaji">💼 Gaji</option>
+          <option value="🏪 Usaha">🏪 Usaha</option>
+          <option value="📦 Freelance">📦 Freelance</option>
+          <option value="💸 Transfer">💸 Transfer</option>
+          <option value="🎁 Hadiah">🎁 Hadiah</option>
+          <option value="📈 Investasi">📈 Investasi</option>
           <option value="🔧 Lainnya">🔧 Lainnya</option>
         </select>
       </div>
@@ -212,58 +271,6 @@
       <div class="form-group">
         <label class="form-label">💵 Jumlah (Rp)</label>
         <input type="number" id="editJumlah" class="form-input" min="0" />
-      </div>
-
-      <button id="btnSimpanEdit" class="btn-primary">💾 Simpan Perubahan</button>
-      <button id="btnTutupEdit" class="btn-secondary">Batal</button>
-    </div>
-  </div>
-
-  <!-- MODAL HAPUS -->
-  <div id="modalHapus" class="modal-overlay hidden">
-    <div class="modal">
-      <div class="modal-icon">🗑️</div>
-      <h2 class="modal-title">Hapus Pengeluaran?</h2>
-      <p class="modal-desc">Data berikut akan dihapus permanen dan tidak bisa dikembalikan.</p>
-      <div class="hapus-info" id="hapusInfo"></div>
-      <button id="btnKonfirmasiHapus" class="btn-danger">🗑️ Ya, Hapus!</button>
-      <button id="btnBatalHapus" class="btn-secondary">Batal</button>
-    </div>
-  </div>
-
-  
-  <!-- MODAL EDIT -->
-  <div id="modalEdit" class="modal-overlay hidden">
-    <div class="modal">
-      <div class="modal-icon">✏️</div>
-      <h2 class="modal-edit-title">Edit Pengeluaran</h2>
-      <div class="form-group">
-        <label class="form-label">📅 Tanggal</label>
-        <input type="date" id="editTanggal" class="form-input" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">🏷️ Kategori</label>
-        <select id="editKategori" class="form-input">
-          <option value="">-- Pilih Kategori --</option>
-          <option value="🍜 Makanan & Minuman">🍜 Makanan & Minuman</option>
-          <option value="🚗 Transportasi">🚗 Transportasi</option>
-          <option value="🛒 Belanja">🛒 Belanja</option>
-          <option value="💊 Kesehatan">💊 Kesehatan</option>
-          <option value="📚 Pendidikan">📚 Pendidikan</option>
-          <option value="🎮 Hiburan">🎮 Hiburan</option>
-          <option value="🏠 Rumah & Utilitas">🏠 Rumah & Utilitas</option>
-          <option value="👗 Pakaian">👗 Pakaian</option>
-          <option value="📱 Pulsa & Internet">📱 Pulsa & Internet</option>
-          <option value="🔧 Lainnya">🔧 Lainnya</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">📝 Keterangan</label>
-        <input type="text" id="editKeterangan" class="form-input" placeholder="Keterangan..." />
-      </div>
-      <div class="form-group">
-        <label class="form-label">💵 Jumlah (Rp)</label>
-        <input type="number" id="editJumlah" class="form-input" placeholder="Contoh: 25000" min="0" />
       </div>
       <div class="modal-actions">
         <button id="btnSimpanEdit" class="btn-primary">💾 Simpan</button>
