@@ -35,7 +35,11 @@ function formatTanggalISO(daysAgo) {
   if (!daysAgo) daysAgo = 0;
   var d = new Date();
   d.setDate(d.getDate() - daysAgo);
-  return d.toISOString().split('T')[0];
+  //pakai wakt lokal(bukan UTC)
+  var y = d.gateFullYear();
+  var m = String(d.getMonth() + 1).padStart(2, '0');
+  var tgl = String(d.getDate()).padStart(2, '0');
+  return y + '-' + m + '-' + tgl;
 }
 
 function toISO(val) {
