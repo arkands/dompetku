@@ -35,8 +35,8 @@ function formatTanggalISO(daysAgo) {
   if (!daysAgo) daysAgo = 0;
   var d = new Date();
   d.setDate(d.getDate() - daysAgo);
-  //pakai wakt lokal(bukan UTC)
-  var y = d.gateFullYear();
+  // Pakai waktu lokal (bukan UTC) agar tidak geser tanggal
+  var y = d.getFullYear();
   var m = String(d.getMonth() + 1).padStart(2, '0');
   var tgl = String(d.getDate()).padStart(2, '0');
   return y + '-' + m + '-' + tgl;
