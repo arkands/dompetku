@@ -15,16 +15,16 @@ let tipeForm   = 'pengeluaran';
 // ---- DEMO DATA ----
 const demoData = [
   ['Tanggal','Kategori','Keterangan','Jumlah','Tipe'],
-  [formatTanggalISO(0), '🍜 Makanan & Minuman', 'Sarapan nasi uduk',  15000,  'pengeluaran'],
-  [formatTanggalISO(0), '💼 Gaji',              'Gaji bulan April', 5000000, 'pemasukan'],
-  [formatTanggalISO(1), '🚗 Transportasi',       'Gojek ke kantor',   22000,  'pengeluaran'],
-  [formatTanggalISO(1), '🛒 Belanja',            'Indomaret',         45000,  'pengeluaran'],
-  [formatTanggalISO(2), '🍜 Makanan & Minuman',  'Makan siang',       25000,  'pengeluaran'],
-  [formatTanggalISO(2), '📦 Freelance',          'Proyek desain web', 800000, 'pemasukan'],
-  [formatTanggalISO(3), '📱 Pulsa & Internet',   'Beli kuota 15GB',   65000,  'pengeluaran'],
-  [formatTanggalISO(4), '💊 Kesehatan',          'Beli vitamin C',    35000,  'pengeluaran'],
-  [formatTanggalISO(5), '🎮 Hiburan',            'Netflix bulanan',   54000,  'pengeluaran'],
-  [formatTanggalISO(6), '🏠 Rumah & Utilitas',   'Bayar listrik',    180000,  'pengeluaran'],
+  [formatTanggalISO(0), ' Makanan & Minuman', 'Sarapan nasi uduk',  15000,  'pengeluaran'],
+  [formatTanggalISO(0), ' Gaji',              'Gaji bulan April', 5000000, 'pemasukan'],
+  [formatTanggalISO(1), ' Transportasi',       'Gojek ke kantor',   22000,  'pengeluaran'],
+  [formatTanggalISO(1), ' Belanja',            'Indomaret',         45000,  'pengeluaran'],
+  [formatTanggalISO(2), ' Makanan & Minuman',  'Makan siang',       25000,  'pengeluaran'],
+  [formatTanggalISO(2), ' Freelance',          'Proyek desain web', 800000, 'pemasukan'],
+  [formatTanggalISO(3), ' Pulsa & Internet',   'Beli kuota 15GB',   65000,  'pengeluaran'],
+  [formatTanggalISO(4), ' Kesehatan',          'Beli vitamin C',    35000,  'pengeluaran'],
+  [formatTanggalISO(5), ' Hiburan',            'Netflix bulanan',   54000,  'pengeluaran'],
+  [formatTanggalISO(6), ' Rumah & Utilitas',   'Bayar listrik',    180000,  'pengeluaran'],
 ];
 
 // ===========================
