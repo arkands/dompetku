@@ -337,12 +337,11 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); cur
   z-index: 20;
 }
 .bnav-tab {
-  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
-  background: none; border: none; cursor: pointer; padding: 4px 0;
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 3px;
+  background: none; border: none; cursor: pointer; padding: 10px 0;
 }
-.bnav-icon { font-size: 19px; color: var(--muted); line-height: 1; }
-.bnav-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; font-family: var(--font-main); font-weight: 600; }
-.bnav-tab.active .bnav-icon { color: var(--income); }
+.bnav-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-family: var(--font-main); font-weight: 700; }
+.bnav-tab.active { border-top: 2px solid var(--income); margin-top: -1px; }
 .bnav-tab.active .bnav-label { color: var(--income); }
 
 /* ===========================
@@ -352,7 +351,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); cur
 .modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px 22px; width: 100%; max-width: 420px; box-shadow: 0 16px 48px rgba(0,0,0,0.8); animation: modalIn 0.3s cubic-bezier(.34,1.56,.64,1); position: relative; overflow: hidden; }
 .modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--income), transparent); }
 @keyframes modalIn { from { transform: scale(0.9) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-.modal-icon { width: 42px; height: 42px; background: var(--surface2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin: 0 auto 14px; border: 1px solid var(--border); color: var(--income); }
+.modal-icon { width: 6px; height: 36px; background: var(--income); border-radius: 4px; margin: 0 auto 18px; box-shadow: var(--glow-green); }
 .modal-title { font-size: 17px; font-weight: 700; text-align: center; margin-bottom: 8px; color: var(--text); }
 .modal-edit-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text); letter-spacing: 0.3px; }
 .modal-desc { font-size: 13px; color: var(--secondary); text-align: center; line-height: 1.6; margin-bottom: 16px; }
@@ -402,9 +401,8 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); cur
     grid-column: 1; grid-row: 2; flex-direction: column; border-top: none; border-right: 1px solid var(--border);
     padding: 20px 0; align-items: stretch; position: sticky; top: 0; height: 100vh; background: var(--surface);
   }
-  .bnav-tab { flex-direction: row; justify-content: flex-start; gap: 12px; padding: 13px 28px; border-left: 3px solid transparent; }
+  .bnav-tab { justify-content: flex-start; gap: 12px; padding: 13px 28px; border-left: 3px solid transparent; border-top: none !important; margin-top: 0 !important; }
   .bnav-tab.active { border-left-color: var(--income); background: rgba(0,230,118,0.05); }
-  .bnav-icon { font-size: 17px; }
   .bnav-label { font-size: 12px; }
   .bnav-tab:hover { background: var(--surface2); }
 
