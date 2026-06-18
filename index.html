@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DompetKu – Pencatat Keuangan</title>
   <meta name="description" content="Aplikasi pencatat keuangan pribadi sederhana" />
-  <meta name="theme-color" content="#1a1a2e" />
+  <meta name="theme-color" content="#121212" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,7 +39,6 @@
         <div class="header-date" id="headerDate"></div>
       </div>
 
-      <!-- SALDO CARD -->
       <div class="saldo-card">
         <p class="saldo-label">Saldo Saat Ini</p>
         <p class="saldo-amount" id="saldoSekarang">Rp 0</p>
@@ -57,91 +56,75 @@
       </div>
     </header>
 
-    <!-- TABS -->
-    <nav class="tabs">
-      <button class="tab active" data-tab="catat">Catat</button>
-      <button class="tab" data-tab="riwayat">Riwayat</button>
-      <button class="tab" data-tab="statistik">Statistik</button>
-    </nav>
-
     <!-- MAIN -->
     <main class="main">
       <div id="pullIndikator" class="pull-indikator"></div>
 
       <!-- TAB CATAT -->
       <section id="tab-catat" class="tab-content active">
-        <div class="card form-card">
 
-          <!-- Toggle Pengeluaran / Pemasukan -->
+        <!-- Terakhir dicatat -->
+        <div class="recent-block">
+          <p class="sec-title">Terakhir Dicatat</p>
+          <div id="recentList">
+            <p class="empty-mini">Belum ada transaksi</p>
+          </div>
+        </div>
+
+        <!-- Quick Form -->
+        <div class="quick-form">
+          <p class="sec-title">Catat Cepat</p>
+
           <div class="type-toggle">
             <button id="btnTipePengeluaran" class="type-btn active-keluar" onclick="setTipe('pengeluaran')">Pengeluaran</button>
             <button id="btnTipePemasukan" class="type-btn" onclick="setTipe('pemasukan')">Pemasukan</button>
           </div>
 
-          <h2 class="card-title" id="formTitle">Catat Pengeluaran Baru</h2>
+          <div class="qf-row">
+            <input type="number" id="inputJumlah" class="form-input qf-jumlah" placeholder="Jumlah (Rp)" min="0" />
+            <input type="text" id="inputKeterangan" class="form-input qf-ket" placeholder="Keterangan" />
+          </div>
 
-          <div class="form-group">
-            <label class="form-label">📅 Tanggal</label>
+          <div class="form-group" style="margin-bottom:10px;">
             <input type="date" id="inputTanggal" class="form-input" />
           </div>
 
-          <div class="form-group" id="grupKategori">
-            <label class="form-label">🏷️ Kategori</label>
-            <select id="inputKategori" class="form-input">
-              <option value="">-- Pilih Kategori --</option>
-              <option value="🍜 Makanan & Minuman">🍜 Makanan & Minuman</option>
-              <option value="🚗 Transportasi">🚗 Transportasi</option>
-              <option value="🛒 Belanja">🛒 Belanja</option>
-              <option value="💊 Kesehatan">💊 Kesehatan</option>
-              <option value="📚 Pendidikan">📚 Pendidikan</option>
-              <option value="🎮 Hiburan">🎮 Hiburan</option>
-              <option value="🏠 Rumah & Utilitas">🏠 Rumah & Utilitas</option>
-              <option value="👗 Pakaian">👗 Pakaian</option>
-              <option value="📱 Pulsa & Internet">📱 Pulsa & Internet</option>
-              <option value="🔧 Lainnya">🔧 Lainnya</option>
-            </select>
+          <p class="form-label" style="margin-bottom:8px;">Kategori</p>
+          <div class="cats" id="catsPengeluaran">
+            <button class="cat-chip" data-cat="Makanan & Minuman">Makanan & Minuman</button>
+            <button class="cat-chip" data-cat="Transportasi">Transportasi</button>
+            <button class="cat-chip" data-cat="Belanja">Belanja</button>
+            <button class="cat-chip" data-cat="Kesehatan">Kesehatan</button>
+            <button class="cat-chip" data-cat="Pendidikan">Pendidikan</button>
+            <button class="cat-chip" data-cat="Hiburan">Hiburan</button>
+            <button class="cat-chip" data-cat="Rumah & Utilitas">Rumah & Utilitas</button>
+            <button class="cat-chip" data-cat="Pakaian">Pakaian</button>
+            <button class="cat-chip" data-cat="Pulsa & Internet">Pulsa & Internet</button>
+            <button class="cat-chip" data-cat="Lainnya">Lainnya</button>
+          </div>
+          <div class="cats hidden" id="catsPemasukan">
+            <button class="cat-chip" data-cat="Gaji">Gaji</button>
+            <button class="cat-chip" data-cat="Usaha">Usaha</button>
+            <button class="cat-chip" data-cat="Freelance">Freelance</button>
+            <button class="cat-chip" data-cat="Transfer">Transfer</button>
+            <button class="cat-chip" data-cat="Hadiah">Hadiah</button>
+            <button class="cat-chip" data-cat="Investasi">Investasi</button>
+            <button class="cat-chip" data-cat="Lainnya">Lainnya</button>
           </div>
 
-          <div class="form-group" id="grupKategoriMasuk" style="display:none;">
-            <label class="form-label">🏷️ Sumber Pemasukan</label>
-            <select id="inputKategoriMasuk" class="form-input">
-              <option value="">-- Pilih Sumber --</option>
-              <option value="💼 Gaji">💼 Gaji</option>
-              <option value="🏪 Usaha">🏪 Usaha</option>
-              <option value="📦 Freelance">📦 Freelance</option>
-              <option value="💸 Transfer">💸 Transfer</option>
-              <option value="🎁 Hadiah">🎁 Hadiah</option>
-              <option value="📈 Investasi">📈 Investasi</option>
-              <option value="🔧 Lainnya">🔧 Lainnya</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">📝 Keterangan</label>
-            <input type="text" id="inputKeterangan" class="form-input" placeholder="Contoh: Makan siang di warung..." />
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">💵 Jumlah (Rp)</label>
-            <input type="number" id="inputJumlah" class="form-input" placeholder="Contoh: 25000" min="0" />
-          </div>
-
-          <button id="btnSimpan" class="btn-primary">
-            <span id="btnText">💾 Simpan</span>
-            <span id="btnLoader" class="hidden">⏳ Menyimpan...</span>
+          <button id="btnSimpan" class="btn-primary" style="margin-top:14px;">
+            <span id="btnText">Simpan</span>
+            <span id="btnLoader" class="hidden">Menyimpan...</span>
           </button>
           <div id="toast" class="toast hidden"></div>
         </div>
 
-        <!-- QUICK STATS -->
         <div class="quick-stats">
           <div class="stat-card">
-            <span class="stat-icon">📆</span>
             <span class="stat-label">Keluar Hari Ini</span>
             <span class="stat-value merah" id="statHariIni">Rp 0</span>
           </div>
           <div class="stat-card">
-            <span class="stat-icon">📅</span>
             <span class="stat-label">Keluar Minggu Ini</span>
             <span class="stat-value merah" id="statMingguIni">Rp 0</span>
           </div>
@@ -151,55 +134,53 @@
       <!-- TAB RIWAYAT -->
       <section id="tab-riwayat" class="tab-content hidden">
         <div class="riwayat-header">
-          <h2 class="card-title">Riwayat Transaksi</h2>
+          <p class="sec-title" style="margin-bottom:0;">Riwayat Transaksi</p>
           <button id="btnRefresh" class="btn-refresh" title="Refresh">↻</button>
         </div>
-        <div class="filter-bar">
-          <select id="filterTipe" class="form-input filter-select">
-            <option value="">Semua Tipe</option>
-            <option value="pengeluaran">📉 Pengeluaran</option>
-            <option value="pemasukan">📈 Pemasukan</option>
-          </select>
+
+        <div class="search-bar">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Cari transaksi..." />
         </div>
+
+        <div class="chip-row" id="chipFilter">
+          <button class="filter-chip active" data-filter="">Semua</button>
+          <button class="filter-chip" data-filter="pemasukan">Pemasukan</button>
+          <button class="filter-chip" data-filter="pengeluaran">Pengeluaran</button>
+        </div>
+
         <div id="riwayatList">
           <div class="empty-state">
-            <div class="empty-icon">📭</div>
-            <p>Belum ada data.<br/>Klik 🔄 untuk memuat riwayat.</p>
+            <p>Belum ada data.<br/>Tarik ke bawah atau tap ↻ untuk memuat riwayat.</p>
           </div>
         </div>
       </section>
 
       <!-- TAB STATISTIK -->
       <section id="tab-statistik" class="tab-content hidden">
-        <h2 class="card-title">Statistik Bulanan</h2>
+        <p class="sec-title">Ringkasan Bulanan</p>
 
-        <!-- Ringkasan 4 kartu -->
         <div class="stat-grid-4">
           <div class="stat-card-big">
-            <span class="stat-big-icon">SALDO</span>
             <span class="stat-big-label">Saldo</span>
             <span class="stat-big-val ungu" id="statSaldo">Rp 0</span>
           </div>
           <div class="stat-card-big">
-            <span class="stat-big-icon">INCOME</span>
+            <span class="stat-big-label">Transaksi</span>
+            <span class="stat-big-val" id="statJmlTransaksi">0</span>
+          </div>
+          <div class="stat-card-big">
             <span class="stat-big-label">Pemasukan</span>
             <span class="stat-big-val hijau" id="statTotalMasuk">Rp 0</span>
           </div>
           <div class="stat-card-big">
-            <span class="stat-big-icon">EXPENSE</span>
             <span class="stat-big-label">Pengeluaran</span>
             <span class="stat-big-val merah" id="statTotalKeluar">Rp 0</span>
           </div>
-          <div class="stat-card-big">
-            <span class="stat-big-icon">TRX</span>
-            <span class="stat-big-label">Transaksi</span>
-            <span class="stat-big-val" id="statJmlTransaksi">0</span>
-          </div>
         </div>
 
-        <!-- Grafik Batang -->
         <div class="chart-card">
-          <p class="chart-title">Pemasukan vs Pengeluaran (6 Bulan)</p>
+          <p class="chart-title">6 Bulan Terakhir</p>
           <div class="chart-wrap" id="chartBatang"></div>
           <div class="chart-legend">
             <span class="legend-dot hijau"></span><span class="legend-label">Pemasukan</span>
@@ -207,76 +188,91 @@
           </div>
         </div>
 
-        <!-- Top Kategori -->
         <div class="chart-card">
           <p class="chart-title">Top Pengeluaran per Kategori</p>
           <div id="topKategori">
-            <p style="color:#8888aa;font-size:13px;text-align:center;padding:16px 0;">Belum ada data</p>
+            <p class="empty-mini">Belum ada data</p>
           </div>
         </div>
       </section>
 
     </main>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+      <button class="bnav-tab active" data-tab="catat">
+        <span class="bnav-icon">✎</span>
+        <span class="bnav-label">Catat</span>
+      </button>
+      <button class="bnav-tab" data-tab="riwayat">
+        <span class="bnav-icon">≡</span>
+        <span class="bnav-label">Riwayat</span>
+      </button>
+      <button class="bnav-tab" data-tab="statistik">
+        <span class="bnav-icon">▤</span>
+        <span class="bnav-label">Statistik</span>
+      </button>
+    </nav>
     <div class="bottom-safe"></div>
   </div>
 
   <!-- MODAL CONFIG -->
   <div id="modalConfig" class="modal-overlay hidden">
     <div class="modal">
-      <div class="modal-icon">⚙️</div>
+      <div class="modal-icon"><span>⚙</span></div>
       <h2 class="modal-title">Setup Pertama Kali</h2>
       <p class="modal-desc">Masukkan URL Google Apps Script kamu untuk menghubungkan aplikasi dengan Google Sheets.</p>
       <div class="form-group">
-        <label class="form-label">🔗 URL Google Apps Script</label>
+        <label class="form-label">URL Google Apps Script</label>
         <input type="url" id="inputScriptUrl" class="form-input" placeholder="https://script.google.com/macros/s/..." />
       </div>
-      <p class="modal-hint">💡 Dapatkan URL ini dari Google Apps Script → Deploy → Manage Deployments</p>
-      <button id="btnSaveConfig" class="btn-primary">✅ Simpan & Mulai</button>
-      <button id="btnDemoMode" class="btn-secondary">🎮 Coba Mode Demo</button>
+      <p class="modal-hint">Dapatkan URL ini dari Google Apps Script → Deploy → Manage Deployments</p>
+      <button id="btnSaveConfig" class="btn-primary">Simpan & Mulai</button>
+      <button id="btnDemoMode" class="btn-secondary">Coba Mode Demo</button>
     </div>
   </div>
 
   <!-- MODAL EDIT -->
   <div id="modalEdit" class="modal-overlay hidden">
     <div class="modal">
-      <div class="modal-icon">✏️</div>
+      <div class="modal-icon"><span>✎</span></div>
       <h2 class="modal-edit-title">Edit Transaksi</h2>
       <div class="form-group">
-        <label class="form-label">📅 Tanggal</label>
+        <label class="form-label">Tanggal</label>
         <input type="date" id="editTanggal" class="form-input" />
       </div>
       <div class="form-group">
-        <label class="form-label">🏷️ Kategori</label>
+        <label class="form-label">Kategori</label>
         <select id="editKategori" class="form-input">
           <option value="">-- Pilih --</option>
-          <option value="🍜 Makanan & Minuman">🍜 Makanan & Minuman</option>
-          <option value="🚗 Transportasi">🚗 Transportasi</option>
-          <option value="🛒 Belanja">🛒 Belanja</option>
-          <option value="💊 Kesehatan">💊 Kesehatan</option>
-          <option value="📚 Pendidikan">📚 Pendidikan</option>
-          <option value="🎮 Hiburan">🎮 Hiburan</option>
-          <option value="🏠 Rumah & Utilitas">🏠 Rumah & Utilitas</option>
-          <option value="👗 Pakaian">👗 Pakaian</option>
-          <option value="📱 Pulsa & Internet">📱 Pulsa & Internet</option>
-          <option value="💼 Gaji">💼 Gaji</option>
-          <option value="🏪 Usaha">🏪 Usaha</option>
-          <option value="📦 Freelance">📦 Freelance</option>
-          <option value="💸 Transfer">💸 Transfer</option>
-          <option value="🎁 Hadiah">🎁 Hadiah</option>
-          <option value="📈 Investasi">📈 Investasi</option>
-          <option value="🔧 Lainnya">🔧 Lainnya</option>
+          <option value="Makanan & Minuman">Makanan & Minuman</option>
+          <option value="Transportasi">Transportasi</option>
+          <option value="Belanja">Belanja</option>
+          <option value="Kesehatan">Kesehatan</option>
+          <option value="Pendidikan">Pendidikan</option>
+          <option value="Hiburan">Hiburan</option>
+          <option value="Rumah & Utilitas">Rumah & Utilitas</option>
+          <option value="Pakaian">Pakaian</option>
+          <option value="Pulsa & Internet">Pulsa & Internet</option>
+          <option value="Gaji">Gaji</option>
+          <option value="Usaha">Usaha</option>
+          <option value="Freelance">Freelance</option>
+          <option value="Transfer">Transfer</option>
+          <option value="Hadiah">Hadiah</option>
+          <option value="Investasi">Investasi</option>
+          <option value="Lainnya">Lainnya</option>
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">📝 Keterangan</label>
+        <label class="form-label">Keterangan</label>
         <input type="text" id="editKeterangan" class="form-input" />
       </div>
       <div class="form-group">
-        <label class="form-label">💵 Jumlah (Rp)</label>
+        <label class="form-label">Jumlah (Rp)</label>
         <input type="number" id="editJumlah" class="form-input" min="0" />
       </div>
       <div class="modal-actions">
-        <button id="btnSimpanEdit" class="btn-primary">💾 Simpan</button>
+        <button id="btnSimpanEdit" class="btn-primary">Simpan</button>
         <button id="btnTutupEdit" class="btn-secondary">Batal</button>
       </div>
     </div>
@@ -285,11 +281,11 @@
   <!-- MODAL HAPUS -->
   <div id="modalHapus" class="modal-overlay hidden">
     <div class="modal">
-      <div class="modal-icon">🗑️</div>
+      <div class="modal-icon"><span>⌫</span></div>
       <h2 class="modal-title">Hapus Transaksi?</h2>
       <p class="modal-desc">Transaksi berikut akan dihapus permanen:</p>
       <div class="hapus-info" id="hapusInfo"></div>
-      <button id="btnKonfirmasiHapus" class="btn-konfirmasi-hapus">🗑️ Ya, Hapus</button>
+      <button id="btnKonfirmasiHapus" class="btn-konfirmasi-hapus">Ya, Hapus</button>
       <button id="btnBatalHapus" class="btn-secondary">Batal</button>
     </div>
   </div>
