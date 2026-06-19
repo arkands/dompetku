@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DompetKu – Pencatat Keuangan</title>
   <meta name="description" content="Aplikasi pencatat keuangan pribadi sederhana" />
-  <meta name="theme-color" content="#121212" />
+  <meta name="theme-color" content="#F6F4FB" />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,7 +18,7 @@
   <!-- SPLASH -->
   <div id="splash">
     <div class="splash-inner">
-      <div class="splash-logo"><span>DK</span></div>
+      <div class="splash-logo"><i class="ti ti-wallet"></i></div>
       <div class="splash-title">DompetKu</div>
       <div class="splash-sub">Memuat aplikasi...</div>
     </div>
@@ -26,190 +27,219 @@
   <!-- APP -->
   <div id="app" class="hidden">
 
-    <!-- HEADER -->
+    <!-- SIDEBAR (desktop only) -->
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark"><i class="ti ti-wallet"></i></div>
+        <div>
+          <p class="header-title">DompetKu</p>
+          <p class="header-subtitle">Catatan harianmu</p>
+        </div>
+      </div>
+      <button class="nav-item active" data-tab="catat"><i class="ti ti-pencil"></i><span>Catat</span></button>
+      <button class="nav-item" data-tab="riwayat"><i class="ti ti-list"></i><span>Riwayat</span></button>
+      <button class="nav-item" data-tab="statistik"><i class="ti ti-chart-bar"></i><span>Statistik</span></button>
+    </nav>
+
+    <!-- HEADER (mobile only) -->
     <header class="header">
       <div class="header-top">
         <div class="header-brand">
-          <div class="brand-mark"><span>DK</span></div>
+          <div class="brand-mark"><i class="ti ti-wallet"></i></div>
           <div>
-            <h1 class="header-title">DompetKu</h1>
-            <p class="header-subtitle">Pencatat Keuangan</p>
+            <p class="header-title">DompetKu</p>
+            <p class="header-subtitle">Catatan harianmu</p>
           </div>
         </div>
         <div class="header-date" id="headerDate"></div>
       </div>
+    </header>
 
+    <!-- CONTENT WRAPPER -->
+    <div class="content-wrapper">
+
+      <!-- TOP BAR (desktop only, shows greeting + date) -->
+      <div class="top-bar">
+        <div>
+          <p class="greet">Halo, selamat datang</p>
+          <p class="greet-sub">Yuk catat transaksi hari ini</p>
+        </div>
+        <div class="header-date desktop-date" id="headerDateDesktop"></div>
+      </div>
+
+      <!-- SALDO CARD (always visible) -->
       <div class="saldo-card">
-        <p class="saldo-label">Saldo Saat Ini</p>
+        <p class="saldo-label">Saldo kamu sekarang</p>
         <p class="saldo-amount" id="saldoSekarang">Rp 0</p>
         <div class="saldo-row">
           <div class="saldo-mini masuk">
-            <p class="saldo-mini-label">Pemasukan</p>
+            <p class="saldo-mini-label">Masuk</p>
             <p class="saldo-mini-val" id="totalMasukHeader">Rp 0</p>
           </div>
           <div class="saldo-mini keluar">
-            <p class="saldo-mini-label">Pengeluaran</p>
+            <p class="saldo-mini-label">Keluar</p>
             <p class="saldo-mini-val" id="totalKeluarHeader">Rp 0</p>
           </div>
         </div>
         <p class="saldo-meta" id="bulanLabelHeader">—</p>
       </div>
-    </header>
 
-    <!-- MAIN -->
-    <main class="main">
-      <div id="pullIndikator" class="pull-indikator"></div>
+      <!-- MAIN -->
+      <main class="main">
+        <div id="pullIndikator" class="pull-indikator"></div>
 
-      <!-- TAB CATAT -->
-      <section id="tab-catat" class="tab-content active">
+        <!-- TAB CATAT -->
+        <section id="tab-catat" class="tab-content active">
+          <div class="two-col">
 
-        <!-- Terakhir dicatat -->
-        <div class="recent-block">
-          <p class="sec-title">Terakhir Dicatat</p>
-          <div id="recentList">
-            <p class="empty-mini">Belum ada transaksi</p>
+            <div class="panel recent-panel">
+              <p class="panel-title">Terakhir Dicatat</p>
+              <div id="recentList">
+                <p class="empty-mini">Belum ada transaksi</p>
+              </div>
+              <div class="quick-stats">
+                <div class="stat-card">
+                  <span class="stat-label">Keluar Hari Ini</span>
+                  <span class="stat-value merah" id="statHariIni">Rp 0</span>
+                </div>
+                <div class="stat-card">
+                  <span class="stat-label">Keluar Minggu Ini</span>
+                  <span class="stat-value merah" id="statMingguIni">Rp 0</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel quick-form">
+              <p class="panel-title">Catat Cepat</p>
+
+              <div class="type-toggle">
+                <button id="btnTipePengeluaran" class="type-btn active-keluar" onclick="setTipe('pengeluaran')">Keluar</button>
+                <button id="btnTipePemasukan" class="type-btn" onclick="setTipe('pemasukan')">Masuk</button>
+              </div>
+
+              <div class="qf-row">
+                <input type="number" id="inputJumlah" class="form-input qf-jumlah" placeholder="Rp 0" min="0" />
+                <input type="text" id="inputKeterangan" class="form-input qf-ket" placeholder="untuk apa?" />
+              </div>
+
+              <div class="form-group">
+                <input type="date" id="inputTanggal" class="form-input" />
+              </div>
+
+              <p class="form-label">Kategori</p>
+              <div class="cats" id="catsPengeluaran">
+                <button class="cat-chip" data-cat="Makanan & Minuman"><i class="ti ti-tools-kitchen-2"></i>Makanan</button>
+                <button class="cat-chip" data-cat="Transportasi"><i class="ti ti-car"></i>Transport</button>
+                <button class="cat-chip" data-cat="Belanja"><i class="ti ti-shopping-bag"></i>Belanja</button>
+                <button class="cat-chip" data-cat="Kesehatan"><i class="ti ti-heartbeat"></i>Kesehatan</button>
+                <button class="cat-chip" data-cat="Pendidikan"><i class="ti ti-book"></i>Pendidikan</button>
+                <button class="cat-chip" data-cat="Hiburan"><i class="ti ti-music"></i>Hiburan</button>
+                <button class="cat-chip" data-cat="Rumah & Utilitas"><i class="ti ti-home"></i>Rumah</button>
+                <button class="cat-chip" data-cat="Pakaian"><i class="ti ti-shirt"></i>Pakaian</button>
+                <button class="cat-chip" data-cat="Pulsa & Internet"><i class="ti ti-wifi"></i>Pulsa</button>
+                <button class="cat-chip" data-cat="Lainnya"><i class="ti ti-dots"></i>Lainnya</button>
+              </div>
+              <div class="cats hidden" id="catsPemasukan">
+                <button class="cat-chip" data-cat="Gaji"><i class="ti ti-briefcase"></i>Gaji</button>
+                <button class="cat-chip" data-cat="Usaha"><i class="ti ti-building-store"></i>Usaha</button>
+                <button class="cat-chip" data-cat="Freelance"><i class="ti ti-laptop"></i>Freelance</button>
+                <button class="cat-chip" data-cat="Transfer"><i class="ti ti-send"></i>Transfer</button>
+                <button class="cat-chip" data-cat="Hadiah"><i class="ti ti-gift"></i>Hadiah</button>
+                <button class="cat-chip" data-cat="Investasi"><i class="ti ti-trending-up"></i>Investasi</button>
+                <button class="cat-chip" data-cat="Lainnya"><i class="ti ti-dots"></i>Lainnya</button>
+              </div>
+
+              <button id="btnSimpan" class="btn-primary">
+                <span id="btnText">Simpan transaksi</span>
+                <span id="btnLoader" class="hidden">Menyimpan...</span>
+              </button>
+              <div id="toast" class="toast hidden"></div>
+            </div>
+
           </div>
-        </div>
+        </section>
 
-        <!-- Quick Form -->
-        <div class="quick-form">
-          <p class="sec-title">Catat Cepat</p>
-
-          <div class="type-toggle">
-            <button id="btnTipePengeluaran" class="type-btn active-keluar" onclick="setTipe('pengeluaran')">Pengeluaran</button>
-            <button id="btnTipePemasukan" class="type-btn" onclick="setTipe('pemasukan')">Pemasukan</button>
+        <!-- TAB RIWAYAT -->
+        <section id="tab-riwayat" class="tab-content hidden">
+          <div class="riwayat-header">
+            <p class="panel-title" style="margin-bottom:0;">Riwayat Transaksi</p>
+            <button id="btnRefresh" class="btn-refresh"><i class="ti ti-refresh"></i></button>
           </div>
 
-          <div class="qf-row">
-            <input type="number" id="inputJumlah" class="form-input qf-jumlah" placeholder="Jumlah (Rp)" min="0" />
-            <input type="text" id="inputKeterangan" class="form-input qf-ket" placeholder="Keterangan" />
+          <div class="search-bar">
+            <i class="ti ti-search search-icon"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Cari transaksi..." />
           </div>
 
-          <div class="form-group" style="margin-bottom:10px;">
-            <input type="date" id="inputTanggal" class="form-input" />
+          <div class="chip-row" id="chipFilter">
+            <button class="filter-chip active" data-filter="">Semua</button>
+            <button class="filter-chip" data-filter="pemasukan">Pemasukan</button>
+            <button class="filter-chip" data-filter="pengeluaran">Pengeluaran</button>
           </div>
 
-          <p class="form-label" style="margin-bottom:8px;">Kategori</p>
-          <div class="cats" id="catsPengeluaran">
-            <button class="cat-chip" data-cat="Makanan & Minuman">Makanan & Minuman</button>
-            <button class="cat-chip" data-cat="Transportasi">Transportasi</button>
-            <button class="cat-chip" data-cat="Belanja">Belanja</button>
-            <button class="cat-chip" data-cat="Kesehatan">Kesehatan</button>
-            <button class="cat-chip" data-cat="Pendidikan">Pendidikan</button>
-            <button class="cat-chip" data-cat="Hiburan">Hiburan</button>
-            <button class="cat-chip" data-cat="Rumah & Utilitas">Rumah & Utilitas</button>
-            <button class="cat-chip" data-cat="Pakaian">Pakaian</button>
-            <button class="cat-chip" data-cat="Pulsa & Internet">Pulsa & Internet</button>
-            <button class="cat-chip" data-cat="Lainnya">Lainnya</button>
+          <div id="riwayatList">
+            <div class="empty-state">
+              <i class="ti ti-inbox" style="font-size:32px;color:var(--muted);margin-bottom:10px;display:block;"></i>
+              <p>Belum ada data.<br/>Tarik ke bawah atau tap ikon refresh untuk memuat riwayat.</p>
+            </div>
           </div>
-          <div class="cats hidden" id="catsPemasukan">
-            <button class="cat-chip" data-cat="Gaji">Gaji</button>
-            <button class="cat-chip" data-cat="Usaha">Usaha</button>
-            <button class="cat-chip" data-cat="Freelance">Freelance</button>
-            <button class="cat-chip" data-cat="Transfer">Transfer</button>
-            <button class="cat-chip" data-cat="Hadiah">Hadiah</button>
-            <button class="cat-chip" data-cat="Investasi">Investasi</button>
-            <button class="cat-chip" data-cat="Lainnya">Lainnya</button>
+        </section>
+
+        <!-- TAB STATISTIK -->
+        <section id="tab-statistik" class="tab-content hidden">
+          <p class="panel-title">Ringkasan Bulanan</p>
+
+          <div class="stat-grid-4">
+            <div class="stat-card-big">
+              <span class="stat-big-label">Saldo</span>
+              <span class="stat-big-val ungu" id="statSaldo">Rp 0</span>
+            </div>
+            <div class="stat-card-big">
+              <span class="stat-big-label">Transaksi</span>
+              <span class="stat-big-val" id="statJmlTransaksi">0</span>
+            </div>
+            <div class="stat-card-big">
+              <span class="stat-big-label">Pemasukan</span>
+              <span class="stat-big-val hijau" id="statTotalMasuk">Rp 0</span>
+            </div>
+            <div class="stat-card-big">
+              <span class="stat-big-label">Pengeluaran</span>
+              <span class="stat-big-val merah" id="statTotalKeluar">Rp 0</span>
+            </div>
           </div>
 
-          <button id="btnSimpan" class="btn-primary" style="margin-top:14px;">
-            <span id="btnText">Simpan</span>
-            <span id="btnLoader" class="hidden">Menyimpan...</span>
-          </button>
-          <div id="toast" class="toast hidden"></div>
-        </div>
-
-        <div class="quick-stats">
-          <div class="stat-card">
-            <span class="stat-label">Keluar Hari Ini</span>
-            <span class="stat-value merah" id="statHariIni">Rp 0</span>
+          <div class="panel">
+            <p class="panel-title">6 Bulan Terakhir</p>
+            <div class="chart-wrap" id="chartBatang"></div>
+            <div class="chart-legend">
+              <span class="legend-dot hijau"></span><span class="legend-label">Pemasukan</span>
+              <span class="legend-dot merah" style="margin-left:12px;"></span><span class="legend-label">Pengeluaran</span>
+            </div>
           </div>
-          <div class="stat-card">
-            <span class="stat-label">Keluar Minggu Ini</span>
-            <span class="stat-value merah" id="statMingguIni">Rp 0</span>
+
+          <div class="panel">
+            <p class="panel-title">Top Pengeluaran per Kategori</p>
+            <div id="topKategori">
+              <p class="empty-mini">Belum ada data</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- TAB RIWAYAT -->
-      <section id="tab-riwayat" class="tab-content hidden">
-        <div class="riwayat-header">
-          <p class="sec-title" style="margin-bottom:0;">Riwayat Transaksi</p>
-          <button id="btnRefresh" class="btn-refresh" title="Refresh">Refresh</button>
-        </div>
+      </main>
+    </div><!-- /content-wrapper -->
 
-        <div class="search-bar">
-          
-          <input type="text" id="searchInput" class="search-input" placeholder="Cari transaksi..." />
-        </div>
-
-        <div class="chip-row" id="chipFilter">
-          <button class="filter-chip active" data-filter="">Semua</button>
-          <button class="filter-chip" data-filter="pemasukan">Pemasukan</button>
-          <button class="filter-chip" data-filter="pengeluaran">Pengeluaran</button>
-        </div>
-
-        <div id="riwayatList">
-          <div class="empty-state">
-            <p>Belum ada data.<br/>Tarik ke bawah atau tap ↻ untuk memuat riwayat.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB STATISTIK -->
-      <section id="tab-statistik" class="tab-content hidden">
-        <p class="sec-title">Ringkasan Bulanan</p>
-
-        <div class="stat-grid-4">
-          <div class="stat-card-big">
-            <span class="stat-big-label">Saldo</span>
-            <span class="stat-big-val ungu" id="statSaldo">Rp 0</span>
-          </div>
-          <div class="stat-card-big">
-            <span class="stat-big-label">Transaksi</span>
-            <span class="stat-big-val" id="statJmlTransaksi">0</span>
-          </div>
-          <div class="stat-card-big">
-            <span class="stat-big-label">Pemasukan</span>
-            <span class="stat-big-val hijau" id="statTotalMasuk">Rp 0</span>
-          </div>
-          <div class="stat-card-big">
-            <span class="stat-big-label">Pengeluaran</span>
-            <span class="stat-big-val merah" id="statTotalKeluar">Rp 0</span>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <p class="chart-title">6 Bulan Terakhir</p>
-          <div class="chart-wrap" id="chartBatang"></div>
-          <div class="chart-legend">
-            <span class="legend-dot hijau"></span><span class="legend-label">Pemasukan</span>
-            <span class="legend-dot merah" style="margin-left:12px;"></span><span class="legend-label">Pengeluaran</span>
-          </div>
-        </div>
-
-        <div class="chart-card">
-          <p class="chart-title">Top Pengeluaran per Kategori</p>
-          <div id="topKategori">
-            <p class="empty-mini">Belum ada data</p>
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- BOTTOM NAVIGATION -->
+    <!-- BOTTOM NAVIGATION (mobile only) -->
     <nav class="bottom-nav">
       <button class="bnav-tab active" data-tab="catat">
-        
+        <i class="ti ti-pencil"></i>
         <span class="bnav-label">Catat</span>
       </button>
       <button class="bnav-tab" data-tab="riwayat">
-        
+        <i class="ti ti-list"></i>
         <span class="bnav-label">Riwayat</span>
       </button>
       <button class="bnav-tab" data-tab="statistik">
-        
+        <i class="ti ti-chart-bar"></i>
         <span class="bnav-label">Statistik</span>
       </button>
     </nav>
@@ -219,7 +249,7 @@
   <!-- MODAL CONFIG -->
   <div id="modalConfig" class="modal-overlay hidden">
     <div class="modal">
-      <div class="modal-icon"></div>
+      <div class="modal-icon"><i class="ti ti-settings"></i></div>
       <h2 class="modal-title">Setup Pertama Kali</h2>
       <p class="modal-desc">Masukkan URL Google Apps Script kamu untuk menghubungkan aplikasi dengan Google Sheets.</p>
       <div class="form-group">
@@ -235,7 +265,7 @@
   <!-- MODAL EDIT -->
   <div id="modalEdit" class="modal-overlay hidden">
     <div class="modal">
-      <div class="modal-icon"></div>
+      <div class="modal-icon"><i class="ti ti-pencil"></i></div>
       <h2 class="modal-edit-title">Edit Transaksi</h2>
       <div class="form-group">
         <label class="form-label">Tanggal</label>
@@ -281,7 +311,7 @@
   <!-- MODAL HAPUS -->
   <div id="modalHapus" class="modal-overlay hidden">
     <div class="modal">
-      <div class="modal-icon"></div>
+      <div class="modal-icon"><i class="ti ti-trash"></i></div>
       <h2 class="modal-title">Hapus Transaksi?</h2>
       <p class="modal-desc">Transaksi berikut akan dihapus permanen:</p>
       <div class="hapus-info" id="hapusInfo"></div>
