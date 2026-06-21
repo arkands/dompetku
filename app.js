@@ -102,8 +102,8 @@ function formatTanggalDisplay(value) {
 }
 
 function labelRelatif(iso) {
-  if (iso === formatTanggalISO(0)) return 'Hari ini';
-  if (iso === formatTanggalISO(1)) return 'Kemarin';
+  if (iso === formatTanggalISO(0)) return t('today');
+  if (iso === formatTanggalISO(1)) return t('yesterday');
   return formatTanggalDisplay(iso);
 }
 
@@ -152,12 +152,7 @@ window.addEventListener('load', function() {
     if (el) el.textContent = dateStr;
   });
 
-  var greetEl = document.querySelector('.greet');
-  if (greetEl) {
-    var h = now.getHours();
-    var salam = h < 10 ? 'Selamat pagi' : h < 15 ? 'Selamat siang' : h < 18 ? 'Selamat sore' : 'Selamat malam';
-    greetEl.textContent = 'Halo, ' + salam + '!';
-  }
+  // Greeting handled by applyTranslations()
 
   var url = getScriptUrl();
   isDemoMode = localStorage.getItem(DEMO_MODE_KEY) === 'true';
@@ -170,6 +165,8 @@ window.addEventListener('load', function() {
 
   setupEventListeners();
   setupPullToRefresh();
+  setupLangPicker();
+  applyTranslations();
   registerServiceWorker();
 });
 
@@ -279,7 +276,7 @@ function aktifkanDemoMode() {
   document.getElementById('modalConfig').classList.add('hidden');
   semuaData = demoData.slice();
   updateSummary(semuaData); renderRecent(); renderRiwayat();
-  showToast('Mode Demo aktif!', 'info');
+  showToast(t('toastDemo'), 'info');
 }
 
 // ===========================
@@ -292,21 +289,21 @@ async function simpanTransaksi() {
   var jumlah     = document.getElementById('inputJumlah').value;
   var kategori   = kategoriPilih;
 
-  if (!tanggal)                         return showToast('Tanggal harus diisi!', 'error');
-  if (!kategori)                        return showToast('Pilih kategori dulu!', 'error');
-  if (!keterangan)                      return showToast('Keterangan harus diisi!', 'error');
-  if (!jumlah || parseInt(jumlah) <= 0) return showToast('Jumlah harus lebih dari 0!', 'error');
+  if (!tanggal)                         return showToast(t('valTanggal'), 'error');
+  if (!kategori)                        return showToast(t('valKategori'), 'error');
+  if (!keterangan)                      return showToast(t('valKeterangan'), 'error');
+  if (!jumlah || parseInt(jumlah) <= 0) return showToast(t('valJumlah'), 'error');
 
   var newRow = [tanggal, kategori, keterangan, parseInt(jumlah), tipeForm];
 
   if (isDemoMode) {
     semuaData.push(newRow);
     updateSummary(semuaData); renderRecent(); renderRiwayat(); renderStatistik();
-    resetForm(); showToast('Berhasil dicatat! (Mode Demo)', 'success'); return;
+    resetForm(); showToast(t('toastSavedDemo'), 'success'); return;
   }
 
   var scriptUrl = getScriptUrl();
-  if (!scriptUrl) return showToast('URL belum dikonfigurasi.', 'error');
+  if (!scriptUrl) return showToast(t('valTanggal').replace('Tanggal', 'URL'), 'error');
 
   setLoading(true);
   try {
@@ -318,9 +315,9 @@ async function simpanTransaksi() {
     semuaData.push(newRow);
     localStorage.setItem(CACHE_KEY, JSON.stringify(semuaData));
     updateSummary(semuaData); renderRecent(); renderRiwayat(); renderStatistik();
-    resetForm(); showToast('Berhasil disimpan!', 'success');
+    resetForm(); showToast(t('toastSaved'), 'success');
   } catch(err) {
-    showToast('Gagal menyimpan. Cek koneksi.', 'error');
+    showToast(t('toastSaveFail'), 'error');
   } finally {
     setLoading(false);
   }
@@ -352,7 +349,7 @@ async function muatData() {
     if (cache) {
       semuaData = JSON.parse(cache);
       updateSummary(semuaData); renderRecent(); renderRiwayat(); renderStatistik();
-      showToast('Offline - menampilkan data tersimpan', 'info');
+      showToast(t('toastOffline'), 'info');
     } else {
       document.getElementById('riwayatList').innerHTML = '<div class="empty-state"><p>Tidak bisa memuat data.</p></div>';
     }
@@ -421,7 +418,7 @@ function renderRecent() {
   rows = rows.slice(0, 3);
 
   if (rows.length === 0) {
-    container.innerHTML = '<p class="empty-mini">Belum ada transaksi</p>'; return;
+    container.innerHTML = '<p class="empty-mini">' + t('noTransaction') + '</p>'; return;
   }
 
   var html = '';
@@ -435,7 +432,7 @@ function renderRecent() {
         '<div class="mini-trx-icon ' + ic + '"><i class="ti ' + ikon + '"></i></div>' +
         '<div class="mini-trx-body">' +
           '<div class="mini-trx-name">' + escapeHtml(r[2]) + '</div>' +
-          '<div class="mini-trx-cat">' + escapeHtml(r[1]) + ' &middot; ' + labelRelatif(r[0]) + '</div>' +
+          '<div class="mini-trx-cat">' + getCatKey(r[1]) + ' &middot; ' + labelRelatif(r[0]) + '</div>' +
         '</div>' +
         '<div class="mini-trx-amt ' + ic + '">' + prefix + formatRupiah(r[3]) + '</div>' +
       '</div>';
@@ -462,7 +459,7 @@ function renderRiwayat() {
   rows.sort(function(a,b) { return new Date(b.row[0]) - new Date(a.row[0]); });
 
   if (rows.length === 0) {
-    container.innerHTML = '<div class="empty-state"><i class="ti ti-inbox" style="font-size:32px;color:var(--muted);margin-bottom:10px;display:block;"></i><p>Tidak ada transaksi yang cocok.</p></div>';
+    container.innerHTML = '<div class="empty-state"><i class="ti ti-inbox" style="font-size:32px;color:var(--muted);margin-bottom:10px;display:block;"></i><p>' + t('noMatch') + '</p></div>';
     return;
   }
 
@@ -484,7 +481,7 @@ function renderRiwayat() {
         '<div class="riwayat-left">' +
           '<div class="riwayat-icon ' + ic + '"><i class="ti ' + ikon + '"></i></div>' +
           '<div class="riwayat-info">' +
-            '<div class="riwayat-kategori">' + escapeHtml(r[1]) + '</div>' +
+            '<div class="riwayat-kategori">' + getCatKey(r[1]) + '</div>' +
             '<div class="riwayat-ket">' + escapeHtml(r[2]) + '</div>' +
             '<div class="riwayat-tanggal">' + formatTanggalDisplay(r[0]) + '</div>' +
           '</div>' +
@@ -561,7 +558,7 @@ function renderStatistik() {
   katArr.sort(function(a,b) { return b.jumlah - a.jumlah; });
   var top5 = katArr.slice(0, 5);
   var maxKat = top5.length > 0 ? top5[0].jumlah : 1;
-  var katHtml = top5.length === 0 ? '<p class="empty-mini">Belum ada data</p>' : top5.map(function(item) {
+  var katHtml = top5.length === 0 ? '<p class="empty-mini">' + t('noData') + '</p>' : top5.map(function(item) {
     var pct = Math.round((item.jumlah / maxKat) * 100);
     var ikon = getIkon(item.kat);
     return '<div class="kat-item"><div class="kat-bar-wrap"><div class="kat-label-row"><span>' + escapeHtml(item.kat) + '</span><span>' + formatRupiah(item.jumlah) + '</span></div><div class="kat-bar-bg"><div class="kat-bar-fill" style="width:' + pct + '%;"></div></div></div></div>';
@@ -594,17 +591,17 @@ async function simpanEdit() {
   var keterangan = document.getElementById('editKeterangan').value.trim();
   var jumlah     = document.getElementById('editJumlah').value;
 
-  if (!tanggal)                         return showToast('Tanggal harus diisi!', 'error');
-  if (!kategori)                        return showToast('Pilih kategori!', 'error');
-  if (!keterangan)                      return showToast('Keterangan harus diisi!', 'error');
-  if (!jumlah || parseInt(jumlah) <= 0) return showToast('Jumlah harus lebih dari 0!', 'error');
+  if (!tanggal)                         return showToast(t('valTanggal'), 'error');
+  if (!kategori)                        return showToast(t('valKategori'), 'error');
+  if (!keterangan)                      return showToast(t('valKeterangan'), 'error');
+  if (!jumlah || parseInt(jumlah) <= 0) return showToast(t('valJumlah'), 'error');
 
   var tipeAsal = semuaData[editBaris][4] || 'pengeluaran';
   semuaData[editBaris] = [tanggal, kategori, keterangan, parseInt(jumlah), tipeAsal];
 
   if (isDemoMode) {
     updateSummary(semuaData); renderRecent(); renderRiwayat(); renderStatistik();
-    tutupModalEdit(); showToast('Data berhasil diubah! (Demo)', 'success'); return;
+    tutupModalEdit(); showToast(t('toastEditedDemo'), 'success'); return;
   }
 
   try {
@@ -612,8 +609,8 @@ async function simpanEdit() {
     await fetch(getScriptUrl() + '?' + params.toString(), { method:'GET', mode:'no-cors' });
     localStorage.setItem(CACHE_KEY, JSON.stringify(semuaData));
     updateSummary(semuaData); renderRecent(); renderRiwayat(); renderStatistik();
-    tutupModalEdit(); showToast('Data berhasil diubah!', 'success');
-  } catch(err) { showToast('Gagal mengubah data.', 'error'); }
+    tutupModalEdit(); showToast(t('toastEdited'), 'success');
+  } catch(err) { showToast(t('toastEditFail'), 'error'); }
 }
 
 // ===========================
@@ -638,7 +635,7 @@ async function konfirmasiHapus() {
   semuaData.splice(hapusBaris, 1);
   localStorage.setItem(CACHE_KEY, JSON.stringify(semuaData));
   updateSummary(semuaData); renderRecent(); renderRiwayat(); renderStatistik();
-  tutupModalHapus(); showToast('Data berhasil dihapus!', 'success');
+  tutupModalHapus(); showToast(t('toastDeleted'), 'success');
   if (isDemoMode) return;
   try {
     var params = new URLSearchParams({ action:'hapus', baris: idx+1 });
@@ -647,7 +644,7 @@ async function konfirmasiHapus() {
     semuaData = cadangan;
     localStorage.setItem(CACHE_KEY, JSON.stringify(semuaData));
     updateSummary(semuaData); renderRecent(); renderRiwayat(); renderStatistik();
-    showToast('Gagal menghapus. Data dikembalikan.', 'error');
+    showToast(t('toastDeleteFail'), 'error');
   }
 }
 
@@ -676,7 +673,7 @@ function setupPullToRefresh() {
     var j = e.changedTouches[0].clientY - startY;
     ind.style.height = '0'; ind.style.opacity = '0';
     if (j > 80) {
-      ind.style.height = '36px'; ind.style.opacity = '1'; ind.textContent = 'Memuat data...';
+      ind.style.height = '36px'; ind.style.opacity = '1'; ind.textContent = t('loadingData');
       muatData().finally(function() {
         setTimeout(function() { ind.style.height = '0'; ind.style.opacity = '0'; ind.textContent = ''; }, 800);
       });
@@ -698,6 +695,17 @@ function resetForm() {
   document.getElementById('inputTanggal').value    = formatTanggalISO(0);
   kategoriPilih = '';
   document.querySelectorAll('.cat-chip').forEach(function(c) { c.classList.remove('active','masuk-active'); });
+}
+
+function setupLangPicker() {
+  document.querySelectorAll('.lang-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      setLang(btn.dataset.lang);
+      renderRecent();
+      renderRiwayat();
+      renderStatistik();
+    });
+  });
 }
 
 function registerServiceWorker() {
