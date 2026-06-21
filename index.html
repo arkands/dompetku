@@ -10,7 +10,7 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@latest/tabler-icons.min.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -20,7 +20,7 @@
     <div class="splash-inner">
       <div class="splash-logo"><i class="ti ti-wallet"></i></div>
       <div class="splash-title">DompetKu</div>
-      <div class="splash-sub">Memuat aplikasi...</div>
+      <div class="splash-sub" data-i18n="loadingApp">Memuat aplikasi...</div>
     </div>
   </div>
 
@@ -36,9 +36,9 @@
           <p class="header-subtitle">Catatan harianmu</p>
         </div>
       </div>
-      <button class="nav-item active" data-tab="catat"><i class="ti ti-pencil"></i><span>Catat</span></button>
-      <button class="nav-item" data-tab="riwayat"><i class="ti ti-list"></i><span>Riwayat</span></button>
-      <button class="nav-item" data-tab="statistik"><i class="ti ti-chart-bar"></i><span>Statistik</span></button>
+      <button class="nav-item active" data-tab="catat"><i class="ti ti-pencil"></i><span data-i18n="tabCatat">Catat</span></button>
+      <button class="nav-item" data-tab="riwayat"><i class="ti ti-list"></i><span data-i18n="tabRiwayat">Riwayat</span></button>
+      <button class="nav-item" data-tab="statistik"><i class="ti ti-chart-bar"></i><span data-i18n="tabStatistik">Statistik</span></button>
     </nav>
 
     <!-- HEADER (mobile only) -->
@@ -48,10 +48,16 @@
           <div class="brand-mark"><i class="ti ti-wallet"></i></div>
           <div>
             <p class="header-title">DompetKu</p>
-            <p class="header-subtitle">Catatan harianmu</p>
+            <p class="header-subtitle" data-i18n="appSubtitle">Catatan harianmu</p>
           </div>
         </div>
         <div class="header-date" id="headerDate"></div>
+      </div>
+      <div class="lang-picker mobile-lang">
+        <button class="lang-btn active" data-lang="id">ID</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="ja">JA</button>
+        <button class="lang-btn" data-lang="ru">RU</button>
       </div>
     </header>
 
@@ -62,22 +68,22 @@
       <div class="top-bar">
         <div>
           <p class="greet">Halo, selamat datang</p>
-          <p class="greet-sub">Yuk catat transaksi hari ini</p>
+          <p class="greet-sub" data-i18n="greetSub">Yuk catat transaksi hari ini</p>
         </div>
         <div class="header-date desktop-date" id="headerDateDesktop"></div>
       </div>
 
       <!-- SALDO CARD (always visible) -->
       <div class="saldo-card">
-        <p class="saldo-label">Saldo kamu sekarang</p>
+        <p class="saldo-label" data-i18n="saldoLabel">Saldo kamu sekarang</p>
         <p class="saldo-amount" id="saldoSekarang">Rp 0</p>
         <div class="saldo-row">
           <div class="saldo-mini masuk">
-            <p class="saldo-mini-label">Masuk</p>
+            <p class="saldo-mini-label" data-i18n="masukLabel">Masuk</p>
             <p class="saldo-mini-val" id="totalMasukHeader">Rp 0</p>
           </div>
           <div class="saldo-mini keluar">
-            <p class="saldo-mini-label">Keluar</p>
+            <p class="saldo-mini-label" data-i18n="keluarLabel">Keluar</p>
             <p class="saldo-mini-val" id="totalKeluarHeader">Rp 0</p>
           </div>
         </div>
@@ -93,40 +99,40 @@
           <div class="two-col">
 
             <div class="panel recent-panel">
-              <p class="panel-title">Terakhir Dicatat</p>
+              <p class="panel-title" data-i18n="recentTitle">Terakhir Dicatat</p>
               <div id="recentList">
-                <p class="empty-mini">Belum ada transaksi</p>
+                <p class="empty-mini" data-i18n="noTransaction">Belum ada transaksi</p>
               </div>
               <div class="quick-stats">
                 <div class="stat-card">
-                  <span class="stat-label">Keluar Hari Ini</span>
+                  <span class="stat-label" data-i18n="keluarHariIni">Keluar Hari Ini</span>
                   <span class="stat-value merah" id="statHariIni">Rp 0</span>
                 </div>
                 <div class="stat-card">
-                  <span class="stat-label">Keluar Minggu Ini</span>
+                  <span class="stat-label" data-i18n="keluarMinggu">Keluar Minggu Ini</span>
                   <span class="stat-value merah" id="statMingguIni">Rp 0</span>
                 </div>
               </div>
             </div>
 
             <div class="panel quick-form">
-              <p class="panel-title">Catat Cepat</p>
+              <p class="panel-title" data-i18n="quickFormTitle">Catat Cepat</p>
 
               <div class="type-toggle">
-                <button id="btnTipePengeluaran" class="type-btn active-keluar" onclick="setTipe('pengeluaran')">Keluar</button>
-                <button id="btnTipePemasukan" class="type-btn" onclick="setTipe('pemasukan')">Masuk</button>
+                <button id="btnTipePengeluaran" class="type-btn active-keluar" onclick="setTipe('pengeluaran')" data-i18n="btnKeluar">Keluar</button>
+                <button id="btnTipePemasukan" class="type-btn" onclick="setTipe('pemasukan')" data-i18n="btnMasuk">Masuk</button>
               </div>
 
               <div class="qf-row">
-                <input type="number" id="inputJumlah" class="form-input qf-jumlah" placeholder="Rp 0" min="0" />
-                <input type="text" id="inputKeterangan" class="form-input qf-ket" placeholder="untuk apa?" />
+                <input type="number" id="inputJumlah" class="form-input qf-jumlah" data-i18n="placeholderRp" data-i18n-attr="placeholder" placeholder="Rp 0" min="0" />
+                <input type="text" id="inputKeterangan" class="form-input qf-ket" data-i18n="placeholderKet" data-i18n-attr="placeholder" placeholder="untuk apa?" />
               </div>
 
               <div class="form-group">
                 <input type="date" id="inputTanggal" class="form-input" />
               </div>
 
-              <p class="form-label">Kategori</p>
+              <p class="form-label" data-i18n="catLabel">Kategori</p>
               <div class="cats" id="catsPengeluaran">
                 <button class="cat-chip" data-cat="Makanan & Minuman"><i class="ti ti-tools-kitchen-2"></i>Makanan</button>
                 <button class="cat-chip" data-cat="Transportasi"><i class="ti ti-car"></i>Transport</button>
@@ -150,8 +156,8 @@
               </div>
 
               <button id="btnSimpan" class="btn-primary">
-                <span id="btnText">Simpan transaksi</span>
-                <span id="btnLoader" class="hidden">Menyimpan...</span>
+                <span id="btnText" data-i18n="btnSimpan">Simpan transaksi</span>
+                <span id="btnLoader" class="hidden" data-i18n="btnSaving">Menyimpan...</span>
               </button>
               <div id="toast" class="toast hidden"></div>
             </div>
@@ -162,19 +168,19 @@
         <!-- TAB RIWAYAT -->
         <section id="tab-riwayat" class="tab-content hidden">
           <div class="riwayat-header">
-            <p class="panel-title" style="margin-bottom:0;">Riwayat Transaksi</p>
+            <p class="panel-title" style="margin-bottom:0;" data-i18n="riwayatTitle">Riwayat Transaksi</p>
             <button id="btnRefresh" class="btn-refresh"><i class="ti ti-refresh"></i></button>
           </div>
 
           <div class="search-bar">
             <i class="ti ti-search search-icon"></i>
-            <input type="text" id="searchInput" class="search-input" placeholder="Cari transaksi..." />
+            <input type="text" id="searchInput" class="search-input" data-i18n="searchPlaceholder" data-i18n-attr="placeholder" placeholder="Cari transaksi..." />
           </div>
 
           <div class="chip-row" id="chipFilter">
-            <button class="filter-chip active" data-filter="">Semua</button>
-            <button class="filter-chip" data-filter="pemasukan">Pemasukan</button>
-            <button class="filter-chip" data-filter="pengeluaran">Pengeluaran</button>
+            <button class="filter-chip active" data-filter="" data-i18n="filterAll">Semua</button>
+            <button class="filter-chip" data-filter="pemasukan" data-i18n="filterIncome">Pemasukan</button>
+            <button class="filter-chip" data-filter="pengeluaran" data-i18n="filterExpense">Pengeluaran</button>
           </div>
 
           <div id="riwayatList">
@@ -187,29 +193,29 @@
 
         <!-- TAB STATISTIK -->
         <section id="tab-statistik" class="tab-content hidden">
-          <p class="panel-title">Ringkasan Bulanan</p>
+          <p class="panel-title" data-i18n="statTitle">Ringkasan Bulanan</p>
 
           <div class="stat-grid-4">
             <div class="stat-card-big">
-              <span class="stat-big-label">Saldo</span>
+              <span class="stat-big-label" data-i18n="statSaldo">Saldo</span>
               <span class="stat-big-val ungu" id="statSaldo">Rp 0</span>
             </div>
             <div class="stat-card-big">
-              <span class="stat-big-label">Transaksi</span>
+              <span class="stat-big-label" data-i18n="statTrx">Transaksi</span>
               <span class="stat-big-val" id="statJmlTransaksi">0</span>
             </div>
             <div class="stat-card-big">
-              <span class="stat-big-label">Pemasukan</span>
+              <span class="stat-big-label" data-i18n="statIncome">Pemasukan</span>
               <span class="stat-big-val hijau" id="statTotalMasuk">Rp 0</span>
             </div>
             <div class="stat-card-big">
-              <span class="stat-big-label">Pengeluaran</span>
+              <span class="stat-big-label" data-i18n="statExpense">Pengeluaran</span>
               <span class="stat-big-val merah" id="statTotalKeluar">Rp 0</span>
             </div>
           </div>
 
           <div class="panel">
-            <p class="panel-title">6 Bulan Terakhir</p>
+            <p class="panel-title" data-i18n="chartTitle">6 Bulan Terakhir</p>
             <div class="chart-wrap" id="chartBatang"></div>
             <div class="chart-legend">
               <span class="legend-dot hijau"></span><span class="legend-label">Pemasukan</span>
@@ -218,7 +224,7 @@
           </div>
 
           <div class="panel">
-            <p class="panel-title">Top Pengeluaran per Kategori</p>
+            <p class="panel-title" data-i18n="topKatTitle">Top Pengeluaran per Kategori</p>
             <div id="topKategori">
               <p class="empty-mini">Belum ada data</p>
             </div>
@@ -232,15 +238,15 @@
     <nav class="bottom-nav">
       <button class="bnav-tab active" data-tab="catat">
         <i class="ti ti-pencil"></i>
-        <span class="bnav-label">Catat</span>
+        <span class="bnav-label" data-i18n="tabCatat">Catat</span>
       </button>
       <button class="bnav-tab" data-tab="riwayat">
         <i class="ti ti-list"></i>
-        <span class="bnav-label">Riwayat</span>
+        <span class="bnav-label" data-i18n="tabRiwayat">Riwayat</span>
       </button>
       <button class="bnav-tab" data-tab="statistik">
         <i class="ti ti-chart-bar"></i>
-        <span class="bnav-label">Statistik</span>
+        <span class="bnav-label" data-i18n="tabStatistik">Statistik</span>
       </button>
     </nav>
     <div class="bottom-safe"></div>
@@ -250,15 +256,15 @@
   <div id="modalConfig" class="modal-overlay hidden">
     <div class="modal">
       <div class="modal-icon"><i class="ti ti-settings"></i></div>
-      <h2 class="modal-title">Setup Pertama Kali</h2>
-      <p class="modal-desc">Masukkan URL Google Apps Script kamu untuk menghubungkan aplikasi dengan Google Sheets.</p>
+      <h2 class="modal-title" data-i18n="setupTitle">Setup Pertama Kali</h2>
+      <p class="modal-desc" data-i18n="setupDesc">Masukkan URL Google Apps Script kamu untuk menghubungkan aplikasi dengan Google Sheets.</p>
       <div class="form-group">
-        <label class="form-label">URL Google Apps Script</label>
+        <label class="form-label" data-i18n="setupUrlLabel">URL Google Apps Script</label>
         <input type="url" id="inputScriptUrl" class="form-input" placeholder="https://script.google.com/macros/s/..." />
       </div>
-      <p class="modal-hint">Dapatkan URL ini dari Google Apps Script → Deploy → Manage Deployments</p>
-      <button id="btnSaveConfig" class="btn-primary">Simpan & Mulai</button>
-      <button id="btnDemoMode" class="btn-secondary">Coba Mode Demo</button>
+      <p class="modal-hint" data-i18n="setupHint">Dapatkan URL ini dari Google Apps Script → Deploy → Manage Deployments</p>
+      <button id="btnSaveConfig" class="btn-primary" data-i18n="btnSaveConfig">Simpan & Mulai</button>
+      <button id="btnDemoMode" class="btn-secondary" data-i18n="btnDemoMode">Coba Mode Demo</button>
     </div>
   </div>
 
@@ -266,7 +272,7 @@
   <div id="modalEdit" class="modal-overlay hidden">
     <div class="modal">
       <div class="modal-icon"><i class="ti ti-pencil"></i></div>
-      <h2 class="modal-edit-title">Edit Transaksi</h2>
+      <h2 class="modal-edit-title" data-i18n="editTitle">Edit Transaksi</h2>
       <div class="form-group">
         <label class="form-label">Tanggal</label>
         <input type="date" id="editTanggal" class="form-input" />
@@ -312,14 +318,15 @@
   <div id="modalHapus" class="modal-overlay hidden">
     <div class="modal">
       <div class="modal-icon"><i class="ti ti-trash"></i></div>
-      <h2 class="modal-title">Hapus Transaksi?</h2>
-      <p class="modal-desc">Transaksi berikut akan dihapus permanen:</p>
+      <h2 class="modal-title" data-i18n="deleteTitle">Hapus Transaksi?</h2>
+      <p class="modal-desc" data-i18n="deleteDesc">Transaksi berikut akan dihapus permanen:</p>
       <div class="hapus-info" id="hapusInfo"></div>
-      <button id="btnKonfirmasiHapus" class="btn-konfirmasi-hapus">Ya, Hapus</button>
-      <button id="btnBatalHapus" class="btn-secondary">Batal</button>
+      <button id="btnKonfirmasiHapus" class="btn-konfirmasi-hapus" data-i18n="btnConfirmDel">Ya, Hapus</button>
+      <button id="btnBatalHapus" class="btn-secondary" data-i18n="btnCancel">Batal</button>
     </div>
   </div>
 
+  <script src="i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
