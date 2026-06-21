@@ -10,7 +10,7 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -39,6 +39,15 @@
       <button class="nav-item active" data-tab="catat"><i class="ti ti-pencil"></i><span data-i18n="tabCatat">Catat</span></button>
       <button class="nav-item" data-tab="riwayat"><i class="ti ti-list"></i><span data-i18n="tabRiwayat">Riwayat</span></button>
       <button class="nav-item" data-tab="statistik"><i class="ti ti-chart-bar"></i><span data-i18n="tabStatistik">Statistik</span></button>
+      <div class="sidebar-lang-wrap">
+        <p class="lang-label" data-i18n="langLabel">Bahasa</p>
+        <div class="lang-btns">
+          <button class="lang-btn active" data-lang="id">ID</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="ja">JA</button>
+          <button class="lang-btn" data-lang="ru">RU</button>
+        </div>
+      </div>
     </nav>
 
     <!-- HEADER (mobile only) -->
