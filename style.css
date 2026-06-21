@@ -626,25 +626,8 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
    LANGUAGE PICKER
    =========================== */
 
-.lang-picker {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.lang-label {
-  font-size: 11px;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-.lang-btns {
-  display: flex;
-  gap: 4px;
-}
-
 .lang-btn {
-  padding: 4px 9px;
+  padding: 5px 10px;
   border-radius: 8px;
   font-size: 11px;
   font-weight: 700;
@@ -655,30 +638,45 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
   transition: all 0.15s;
   font-family: var(--font-main);
 }
+.lang-btn:hover  { border-color: var(--purple); color: var(--purple); }
+.lang-btn.active { background: var(--purple-l); border-color: var(--purple); color: var(--purple-d); }
 
-.lang-btn:hover { border-color: var(--purple); color: var(--purple); }
-.lang-btn.active { background: var(--purple-l); border-color: var(--purple); color: var(--purple-d); font-weight: 700; }
+.lang-btns { display: flex; gap: 5px; }
+.lang-label { font-size: 11px; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
 
-/* Mobile lang picker — horizontal row below header */
-.mobile-lang {
-  padding: 8px 18px 10px;
-  border-top: 1px solid var(--border);
-  background: var(--surface);
+/* Mobile: row below header-top */
+.mobile-lang-wrap {
+  display: flex;
   justify-content: flex-end;
+  gap: 5px;
+  padding: 6px 18px 10px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
 }
 
-/* Sidebar lang picker — at bottom of sidebar */
-.sidebar-lang {
+/* Also support old class name */
+.lang-picker.mobile-lang {
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+  padding: 6px 18px 10px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+/* Sidebar lang: pinned at bottom of sidebar */
+.sidebar-lang-wrap {
   margin-top: auto;
   padding: 16px 22px;
   border-top: 1px solid var(--border);
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  display: none; /* shown only on desktop */
 }
 
 @media (min-width: 1024px) {
-  .mobile-lang  { display: none; }
-  .sidebar-lang { display: flex; }
+  .mobile-lang-wrap      { display: none; }
+  .lang-picker.mobile-lang { display: none; }
+  .sidebar-lang-wrap     { display: block; }
+}
+
+@media (max-width: 1023px) {
+  .sidebar-lang-wrap { display: none; }
 }
