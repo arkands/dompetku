@@ -708,6 +708,15 @@ function setupLangPicker() {
   });
 }
 
+// Override applyTranslations to also sync all lang-btn active states
+var _origApply = applyTranslations;
+applyTranslations = function() {
+  _origApply();
+  document.querySelectorAll('.lang-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.lang === currentLang);
+  });
+};
+
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js')
