@@ -621,3 +621,64 @@ input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity
   .top-bar { padding: 32px 48px 0; }
   .saldo-card { margin: 22px 48px 0; }
 }
+
+/* ===========================
+   LANGUAGE PICKER
+   =========================== */
+
+.lang-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lang-label {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.lang-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.lang-btn {
+  padding: 4px 9px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-main);
+}
+
+.lang-btn:hover { border-color: var(--purple); color: var(--purple); }
+.lang-btn.active { background: var(--purple-l); border-color: var(--purple); color: var(--purple-d); font-weight: 700; }
+
+/* Mobile lang picker — horizontal row below header */
+.mobile-lang {
+  padding: 8px 18px 10px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  justify-content: flex-end;
+}
+
+/* Sidebar lang picker — at bottom of sidebar */
+.sidebar-lang {
+  margin-top: auto;
+  padding: 16px 22px;
+  border-top: 1px solid var(--border);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  display: none; /* shown only on desktop */
+}
+
+@media (min-width: 1024px) {
+  .mobile-lang  { display: none; }
+  .sidebar-lang { display: flex; }
+}
